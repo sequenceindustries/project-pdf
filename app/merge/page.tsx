@@ -1,0 +1,1 @@
+import MergeWorkspace from "./workspace";export default function Page(){return <MergeWorkspace/>}

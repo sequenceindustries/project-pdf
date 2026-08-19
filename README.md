@@ -1,14 +1,15 @@
 # Project PDF
 
-Sequence Industries — PDF utility platform.
+Sequence Industries PDF utility platform.
 
-## MVP
-
-Initial product foundation is being built as a browser-first PDF workspace: merge, split, compress/optimize, image-to-PDF, and PDF page export, followed by production-grade rendering, storage, security, OCR and document intelligence.
-
-## Development
-
+## MVP foundation
 - Next.js + TypeScript
-- React
-- pdf-lib
-- Browser-first processing where practical
+- Browser-first PDF processing
+- Responsive landing page
+- Tool directory
+- Functional Merge PDF workflow
+- Drag-and-drop upload
+- File validation and 50 MB/file limit
+
+## Roadmap
+Split, compression, image conversion, page manipulation, OCR, document intelligence, accounts, billing, storage and production hardening.
