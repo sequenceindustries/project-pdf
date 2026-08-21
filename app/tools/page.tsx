@@ -14,6 +14,12 @@ import ToolCard from "@/components/ToolCard";
 
 const tools = [
   {
+    title: "Compress PDF",
+    description: "Shrink file size by recompressing pages.",
+    href: "/compress",
+    Icon: Minimize2,
+  },
+  {
     title: "Merge PDF",
     description: "Combine multiple PDFs into one document.",
     href: "/merge",
@@ -24,12 +30,6 @@ const tools = [
     description: "Extract pages or ranges from a PDF.",
     href: "/split",
     Icon: Scissors,
-  },
-  {
-    title: "Compress PDF",
-    description: "Optimize PDF structure in your browser.",
-    href: "/compress",
-    Icon: Minimize2,
   },
   {
     title: "JPG to PDF",
