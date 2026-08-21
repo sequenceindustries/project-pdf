@@ -1,7 +1,11 @@
 "use client";
 import { useState } from "react";
 import { PDFDocument } from "pdf-lib";
-import { Download, Loader2, Upload, FileText } from "lucide-react";
+import { Download, Loader2, FileText } from "lucide-react";
+import Header from "@/components/Header";
+import Dropzone from "@/components/Dropzone";
+import StatusMessage from "@/components/StatusMessage";
+import { isPdf, MAX_FILE_SIZE } from "@/lib/pdf-utils";
 
 function parseRanges(input: string, pageCount: number): number[] | null {
   const trimmed = input.trim();
@@ -37,17 +41,17 @@ export default function SplitWorkspace() {
   const [error, setError] = useState("");
   const [loadingCount, setLoadingCount] = useState(false);
 
-  async function handleFile(f: File | undefined) {
+  async function handleFiles(files: File[]) {
     setError("");
     setFile(null);
     setPageCount(null);
+    const f = files[0];
     if (!f) return;
-    const isPdf = f.type === "application/pdf" || f.name.toLowerCase().endsWith(".pdf");
-    if (!isPdf) {
+    if (!isPdf(f)) {
       setError("Please choose a PDF file.");
       return;
     }
-    if (f.size > 50 * 1024 * 1024) {
+    if (f.size > MAX_FILE_SIZE) {
       setError("File is larger than the 50 MB limit.");
       return;
     }
@@ -77,7 +81,7 @@ export default function SplitWorkspace() {
       const out = await PDFDocument.create();
       const pages = await out.copyPages(src, indices);
       pages.forEach((p) => out.addPage(p));
-      const blob = new Blob([await out.save() as BlobPart], { type: "application/pdf" });
+      const blob = new Blob([(await out.save()) as BlobPart], { type: "application/pdf" });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
@@ -93,50 +97,31 @@ export default function SplitWorkspace() {
 
   return (
     <main className="min-h-screen">
-      <header className="border-b bg-white">
-        <div className="mx-auto max-w-5xl px-6 py-5">
-          <a href="/" className="text-xl font-bold">PDF<span className="text-[var(--accent)]">.</span></a>
-        </div>
-      </header>
-      <section className="mx-auto max-w-4xl px-6 py-14">
+      <Header />
+      <section className="mx-auto max-w-4xl px-4 py-10 sm:px-6 sm:py-14">
         <div className="text-center">
-          <h1 className="text-4xl font-bold">Split PDF</h1>
+          <h1 className="font-display text-3xl font-bold sm:text-4xl">Split PDF</h1>
           <p className="mt-3 text-[var(--muted)]">Extract specific pages or ranges into a new PDF.</p>
         </div>
 
         {!file && (
-          <label
-            onDragOver={(e) => e.preventDefault()}
-            onDrop={(e) => {
-              e.preventDefault();
-              handleFile(e.dataTransfer.files?.[0]);
-            }}
-            className="mt-10 flex cursor-pointer flex-col items-center rounded-3xl border-2 border-dashed bg-white px-6 py-14 text-center"
-          >
-            <input
-              type="file"
-              accept="application/pdf,.pdf"
-              className="hidden"
-              onChange={(e) => {
-                handleFile(e.target.files?.[0]);
-                e.currentTarget.value = "";
-              }}
-            />
-            <Upload size={30} />
-            <div className="mt-4 text-lg font-semibold">
-              {loadingCount ? "Reading PDF…" : "Drop a PDF here"}
-            </div>
-            <div className="mt-2 text-sm text-[var(--muted)]">or click to browse</div>
-          </label>
+          <Dropzone
+            accept="application/pdf,.pdf"
+            onFiles={handleFiles}
+            title={loadingCount ? "Reading PDF…" : "Drop a PDF here"}
+            subtitle="or click to browse"
+          />
         )}
 
         {file && pageCount && (
-          <div className="mt-6 rounded-2xl border bg-white p-6">
-            <div className="flex items-center gap-3 border-b pb-4">
-              <FileText size={20} className="text-[var(--muted)]" />
-              <div className="flex-1">
+          <div className="mt-6 rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-5 sm:p-6">
+            <div className="flex items-center gap-3 border-b border-[var(--border)] pb-4">
+              <FileText size={20} className="shrink-0 text-[var(--muted)]" />
+              <div className="min-w-0 flex-1">
                 <div className="truncate text-sm font-medium">{file.name}</div>
-                <div className="text-xs text-[var(--muted)]">{pageCount} page{pageCount === 1 ? "" : "s"}</div>
+                <div className="text-xs text-[var(--muted)]">
+                  {pageCount} page{pageCount === 1 ? "" : "s"}
+                </div>
               </div>
               <button
                 onClick={() => {
@@ -145,7 +130,7 @@ export default function SplitWorkspace() {
                   setRanges("");
                   setError("");
                 }}
-                className="text-sm text-[var(--muted)] underline"
+                className="shrink-0 text-sm text-[var(--muted)] underline"
               >
                 Change file
               </button>
@@ -156,7 +141,7 @@ export default function SplitWorkspace() {
               value={ranges}
               onChange={(e) => setRanges(e.target.value)}
               placeholder={`e.g. 1-3,5,8-${pageCount}`}
-              className="mt-2 w-full rounded-xl border px-4 py-3 text-sm outline-none focus:border-black"
+              className="mt-2 w-full rounded-xl border border-[var(--border)] px-4 py-3 text-sm outline-none focus:border-[var(--accent)]"
             />
             <p className="mt-2 text-xs text-[var(--muted)]">
               Use commas for individual pages and dashes for ranges. Pages 1–{pageCount}.
@@ -165,7 +150,7 @@ export default function SplitWorkspace() {
             <button
               disabled={busy}
               onClick={split}
-              className="mt-5 w-full rounded-xl bg-black px-5 py-3.5 font-semibold text-white disabled:opacity-40"
+              className="mt-5 w-full rounded-xl bg-black px-5 py-3.5 font-semibold text-white transition-opacity disabled:opacity-40"
             >
               {busy ? (
                 <Loader2 className="mx-auto animate-spin" />
@@ -179,7 +164,7 @@ export default function SplitWorkspace() {
           </div>
         )}
 
-        {error && <p className="mt-4 rounded-xl bg-red-50 p-3 text-sm text-red-700">{error}</p>}
+        <StatusMessage>{error}</StatusMessage>
       </section>
     </main>
   );

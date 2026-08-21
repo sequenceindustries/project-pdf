@@ -1,7 +1,11 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { PDFDocument } from "pdf-lib";
-import { Download, Loader2, Trash2, Upload, ArrowUp, ArrowDown } from "lucide-react";
+import { Download, Loader2, Trash2, ArrowUp, ArrowDown, ImagePlus } from "lucide-react";
+import Header from "@/components/Header";
+import Dropzone from "@/components/Dropzone";
+import StatusMessage from "@/components/StatusMessage";
+import { isImage, MAX_FILE_SIZE } from "@/lib/pdf-utils";
 
 type Item = { file: File; url: string };
 
@@ -21,9 +25,7 @@ export default function ImageToPdfWorkspace() {
     const accepted: Item[] = [];
     let rejected = false;
     for (const f of files) {
-      const isImage =
-        ["image/jpeg", "image/png"].includes(f.type) || /\.(jpg|jpeg|png)$/i.test(f.name);
-      if (!isImage || f.size > 50 * 1024 * 1024) {
+      if (!isImage(f) || f.size > MAX_FILE_SIZE) {
         rejected = true;
         continue;
       }
@@ -66,7 +68,7 @@ export default function ImageToPdfWorkspace() {
         const page = doc.addPage([image.width, image.height]);
         page.drawImage(image, { x: 0, y: 0, width: image.width, height: image.height });
       }
-      const blob = new Blob([await doc.save() as BlobPart], { type: "application/pdf" });
+      const blob = new Blob([(await doc.save()) as BlobPart], { type: "application/pdf" });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
@@ -82,65 +84,46 @@ export default function ImageToPdfWorkspace() {
 
   return (
     <main className="min-h-screen">
-      <header className="border-b bg-white">
-        <div className="mx-auto max-w-5xl px-6 py-5">
-          <a href="/" className="text-xl font-bold">PDF<span className="text-[var(--accent)]">.</span></a>
-        </div>
-      </header>
-      <section className="mx-auto max-w-4xl px-6 py-14">
+      <Header />
+      <section className="mx-auto max-w-4xl px-4 py-10 sm:px-6 sm:py-14">
         <div className="text-center">
-          <h1 className="text-4xl font-bold">JPG to PDF</h1>
+          <h1 className="font-display text-3xl font-bold sm:text-4xl">JPG to PDF</h1>
           <p className="mt-3 text-[var(--muted)]">
             Convert one or more images into a single PDF document.
           </p>
         </div>
 
-        <label
-          onDragOver={(e) => e.preventDefault()}
-          onDrop={(e) => {
-            e.preventDefault();
-            add(Array.from(e.dataTransfer.files));
-          }}
-          className="mt-10 flex cursor-pointer flex-col items-center rounded-3xl border-2 border-dashed bg-white px-6 py-14 text-center"
-        >
-          <input
-            type="file"
-            accept="image/jpeg,image/png,.jpg,.jpeg,.png"
-            multiple
-            className="hidden"
-            onChange={(e) => {
-              add(Array.from(e.target.files || []));
-              e.currentTarget.value = "";
-            }}
-          />
-          <Upload size={30} />
-          <div className="mt-4 text-lg font-semibold">Drop images here</div>
-          <div className="mt-2 text-sm text-[var(--muted)]">or click to browse — JPG or PNG</div>
-        </label>
+        <Dropzone
+          accept="image/jpeg,image/png,.jpg,.jpeg,.png"
+          multiple
+          onFiles={add}
+          title="Drop images here"
+          subtitle="or click to browse — JPG or PNG"
+        />
 
         {items.length > 0 && (
-          <div className="mt-6 rounded-2xl border bg-white p-4">
+          <div className="mt-6 rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-4">
             <p className="mb-3 px-2 text-xs text-[var(--muted)]">
               Reorder images with the arrows — this sets the page order in the PDF.
             </p>
             {items.map((item, i) => (
               <div
                 key={item.url}
-                className="flex items-center gap-3 border-b p-3 last:border-0"
+                className="flex items-center gap-3 border-b border-[var(--border)] p-3 last:border-0"
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={item.url}
                   alt={item.file.name}
-                  className="h-12 w-12 rounded-lg border object-cover"
+                  className="h-12 w-12 shrink-0 rounded-lg border border-[var(--border)] object-cover"
                 />
-                <span className="flex-1 truncate text-sm">
+                <span className="min-w-0 flex-1 truncate text-sm">
                   {i + 1}. {item.file.name}
                 </span>
                 <button
                   onClick={() => move(i, -1)}
                   disabled={i === 0}
-                  className="disabled:opacity-30"
+                  className="shrink-0 disabled:opacity-30"
                   aria-label="Move up"
                 >
                   <ArrowUp size={16} />
@@ -148,12 +131,12 @@ export default function ImageToPdfWorkspace() {
                 <button
                   onClick={() => move(i, 1)}
                   disabled={i === items.length - 1}
-                  className="disabled:opacity-30"
+                  className="shrink-0 disabled:opacity-30"
                   aria-label="Move down"
                 >
                   <ArrowDown size={16} />
                 </button>
-                <button onClick={() => remove(i)} aria-label="Remove">
+                <button onClick={() => remove(i)} className="shrink-0" aria-label="Remove">
                   <Trash2 size={17} />
                 </button>
               </div>
@@ -161,13 +144,13 @@ export default function ImageToPdfWorkspace() {
             <button
               disabled={busy}
               onClick={convert}
-              className="mt-4 w-full rounded-xl bg-black px-5 py-3.5 font-semibold text-white disabled:opacity-40"
+              className="mt-4 w-full rounded-xl bg-black px-5 py-3.5 font-semibold text-white transition-opacity disabled:opacity-40"
             >
               {busy ? (
                 <Loader2 className="mx-auto animate-spin" />
               ) : (
                 <>
-                  <Download className="mr-2 inline" size={17} />
+                  <ImagePlus className="mr-2 inline" size={17} />
                   Convert & download
                 </>
               )}
@@ -175,7 +158,7 @@ export default function ImageToPdfWorkspace() {
           </div>
         )}
 
-        {error && <p className="mt-4 rounded-xl bg-red-50 p-3 text-sm text-red-700">{error}</p>}
+        <StatusMessage>{error}</StatusMessage>
       </section>
     </main>
   );

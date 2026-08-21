@@ -1,7 +1,11 @@
 "use client";
 import { useState } from "react";
 import { PDFDocument } from "pdf-lib";
-import { Download, Loader2, Upload, FileText } from "lucide-react";
+import { Download, Loader2, FileText, Minimize2 } from "lucide-react";
+import Header from "@/components/Header";
+import Dropzone from "@/components/Dropzone";
+import StatusMessage from "@/components/StatusMessage";
+import { isPdf, MAX_FILE_SIZE } from "@/lib/pdf-utils";
 
 function formatSize(bytes: number) {
   if (bytes < 1024) return `${bytes} B`;
@@ -15,16 +19,16 @@ export default function CompressWorkspace() {
   const [error, setError] = useState("");
   const [result, setResult] = useState<{ blob: Blob; size: number } | null>(null);
 
-  function handleFile(f: File | undefined) {
+  function handleFiles(files: File[]) {
     setError("");
     setResult(null);
+    const f = files[0];
     if (!f) return;
-    const isPdf = f.type === "application/pdf" || f.name.toLowerCase().endsWith(".pdf");
-    if (!isPdf) {
+    if (!isPdf(f)) {
       setError("Please choose a PDF file.");
       return;
     }
-    if (f.size > 50 * 1024 * 1024) {
+    if (f.size > MAX_FILE_SIZE) {
       setError("File is larger than the 50 MB limit.");
       return;
     }
@@ -75,48 +79,29 @@ export default function CompressWorkspace() {
 
   return (
     <main className="min-h-screen">
-      <header className="border-b bg-white">
-        <div className="mx-auto max-w-5xl px-6 py-5">
-          <a href="/" className="text-xl font-bold">PDF<span className="text-[var(--accent)]">.</span></a>
-        </div>
-      </header>
-      <section className="mx-auto max-w-4xl px-6 py-14">
+      <Header />
+      <section className="mx-auto max-w-4xl px-4 py-10 sm:px-6 sm:py-14">
         <div className="text-center">
-          <h1 className="text-4xl font-bold">Compress PDF</h1>
+          <h1 className="font-display text-3xl font-bold sm:text-4xl">Compress PDF</h1>
           <p className="mt-3 text-[var(--muted)]">
             Reduce file size by optimizing PDF structure, right in your browser.
           </p>
         </div>
 
         {!file && (
-          <label
-            onDragOver={(e) => e.preventDefault()}
-            onDrop={(e) => {
-              e.preventDefault();
-              handleFile(e.dataTransfer.files?.[0]);
-            }}
-            className="mt-10 flex cursor-pointer flex-col items-center rounded-3xl border-2 border-dashed bg-white px-6 py-14 text-center"
-          >
-            <input
-              type="file"
-              accept="application/pdf,.pdf"
-              className="hidden"
-              onChange={(e) => {
-                handleFile(e.target.files?.[0]);
-                e.currentTarget.value = "";
-              }}
-            />
-            <Upload size={30} />
-            <div className="mt-4 text-lg font-semibold">Drop a PDF here</div>
-            <div className="mt-2 text-sm text-[var(--muted)]">or click to browse</div>
-          </label>
+          <Dropzone
+            accept="application/pdf,.pdf"
+            onFiles={handleFiles}
+            title="Drop a PDF here"
+            subtitle="or click to browse"
+          />
         )}
 
         {file && (
-          <div className="mt-6 rounded-2xl border bg-white p-6">
-            <div className="flex items-center gap-3 border-b pb-4">
-              <FileText size={20} className="text-[var(--muted)]" />
-              <div className="flex-1">
+          <div className="mt-6 rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-5 sm:p-6">
+            <div className="flex items-center gap-3 border-b border-[var(--border)] pb-4">
+              <FileText size={20} className="shrink-0 text-[var(--muted)]" />
+              <div className="min-w-0 flex-1">
                 <div className="truncate text-sm font-medium">{file.name}</div>
                 <div className="text-xs text-[var(--muted)]">{formatSize(file.size)}</div>
               </div>
@@ -126,7 +111,7 @@ export default function CompressWorkspace() {
                   setResult(null);
                   setError("");
                 }}
-                className="text-sm text-[var(--muted)] underline"
+                className="shrink-0 text-sm text-[var(--muted)] underline"
               >
                 Change file
               </button>
@@ -136,17 +121,24 @@ export default function CompressWorkspace() {
               <button
                 disabled={busy}
                 onClick={compress}
-                className="mt-5 w-full rounded-xl bg-black px-5 py-3.5 font-semibold text-white disabled:opacity-40"
+                className="mt-5 w-full rounded-xl bg-black px-5 py-3.5 font-semibold text-white transition-opacity disabled:opacity-40"
               >
-                {busy ? <Loader2 className="mx-auto animate-spin" /> : "Compress PDF"}
+                {busy ? (
+                  <Loader2 className="mx-auto animate-spin" />
+                ) : (
+                  <>
+                    <Minimize2 className="mr-2 inline" size={17} />
+                    Compress PDF
+                  </>
+                )}
               </button>
             ) : (
               <div className="mt-5">
-                <div className="flex items-center justify-between rounded-xl bg-gray-50 px-4 py-3 text-sm">
+                <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl bg-gray-50 px-4 py-3 text-sm">
                   <span className="text-[var(--muted)]">{formatSize(file.size)}</span>
                   <span className="font-semibold">→ {formatSize(result.size)}</span>
                   {savedPct !== null && savedPct > 0 && (
-                    <span className="rounded-full bg-green-100 px-2.5 py-1 text-xs font-semibold text-green-700">
+                    <span className="rounded-full bg-[var(--success-bg)] px-2.5 py-1 text-xs font-semibold text-[var(--success)]">
                       -{savedPct}%
                     </span>
                   )}
@@ -169,7 +161,7 @@ export default function CompressWorkspace() {
           </div>
         )}
 
-        {error && <p className="mt-4 rounded-xl bg-red-50 p-3 text-sm text-red-700">{error}</p>}
+        <StatusMessage>{error}</StatusMessage>
       </section>
     </main>
   );

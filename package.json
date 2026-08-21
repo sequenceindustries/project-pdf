@@ -1,25 +1,28 @@
 {
-    "name": "project-pdf",
-    "version": "0.1.0",
-    "private": true,
-    "scripts": {
-          "dev": "next dev",
-          "build": "next build",
-          "start": "next start"
-    },
-    "dependencies": {
-          "lucide-react": "^0.468.0",
-          "next": "15.5.23",
-          "pdf-lib": "^1.17.1",
-          "react": "19.1.1",
-          "react-dom": "19.1.1"
-    },
-    "devDependencies": {
-          "@tailwindcss/postcss": "^4.0.0",
-          "@types/node": "^22.0.0",
-          "@types/react": "^19.0.0",
-          "@types/react-dom": "^19.0.0",
-          "tailwindcss": "^4.0.0",
-          "typescript": "^5.6.0"
-    }
+  "name": "project-pdf",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "@cantoo/pdf-lib": "^2.9.1",
+    "jszip": "^3.10.1",
+    "lucide-react": "^0.468.0",
+    "next": "15.5.23",
+    "pdf-lib": "^1.17.1",
+    "pdfjs-dist": "^4.10.38",
+    "react": "19.1.1",
+    "react-dom": "19.1.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.0.0",
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "tailwindcss": "^4.0.0",
+    "typescript": "^5.6.0"
+  }
 }
