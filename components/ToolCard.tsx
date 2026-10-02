@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, type LucideIcon } from "lucide-react";
+import { ArrowUpRight, type LucideIcon } from "lucide-react";
 
 export default function ToolCard({
   title,
@@ -15,29 +15,23 @@ export default function ToolCard({
   return (
     <Link
       href={href}
-      className="group rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-5 text-left shadow-sm transition-shadow hover:shadow-md sm:p-6"
+      className="group flex flex-col justify-between rounded-[1.75rem] bg-[var(--surface-soft)] p-6 text-left transition-transform duration-200 hover:-translate-y-0.5 sm:p-7"
     >
       <div className="flex items-start justify-between">
         {Icon ? (
-          <div
-            className="rounded-xl bg-gray-100 p-3"
-            style={{
-              boxShadow:
-                "4px 4px 0 -2px var(--border), 4px 4px 0 0 var(--surface), 8px 8px 0 -4px var(--border)",
-            }}
-          >
-            <Icon size={20} />
+          <div className="flex h-11 w-11 items-center justify-center rounded-full bg-white shadow-sm">
+            <Icon size={19} strokeWidth={1.8} />
           </div>
-        ) : (
-          <h2 className="font-display text-lg font-semibold sm:text-xl">{title}</h2>
-        )}
-        <ArrowRight
-          className="text-gray-400 transition-transform group-hover:translate-x-1"
-          size={20}
+        ) : null}
+        <ArrowUpRight
+          className="text-[var(--muted)] transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+          size={18}
         />
       </div>
-      {Icon && <h2 className="font-display mt-6 text-lg font-semibold sm:text-xl">{title}</h2>}
-      <p className="mt-2 text-sm leading-6 text-[var(--muted)]">{description}</p>
+      <div className="mt-6">
+        <h2 className="font-display text-lg font-semibold sm:text-xl">{title}</h2>
+        <p className="mt-1.5 text-sm leading-6 text-[var(--muted)]">{description}</p>
+      </div>
     </Link>
   );
 }

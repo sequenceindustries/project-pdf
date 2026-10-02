@@ -3,6 +3,7 @@ import { useState } from "react";
 import { PDFDocument, rgb, StandardFonts, degrees } from "pdf-lib";
 import { Download, Loader2, FileText, Stamp } from "lucide-react";
 import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 import Dropzone from "@/components/Dropzone";
 import StatusMessage from "@/components/StatusMessage";
 import { isPdf, MAX_FILE_SIZE } from "@/lib/pdf-utils";
@@ -80,7 +81,7 @@ export default function WatermarkWorkspace() {
       <Header />
       <section className="mx-auto max-w-4xl px-4 py-10 sm:px-6 sm:py-14">
         <div className="text-center">
-          <h1 className="font-display text-3xl font-bold sm:text-4xl">Watermark PDF</h1>
+          <h1 className="font-display text-4xl font-bold sm:text-5xl">Watermark PDF</h1>
           <p className="mt-3 text-[var(--muted)]">
             Stamp text across every page, entirely in your browser.
           </p>
@@ -96,7 +97,7 @@ export default function WatermarkWorkspace() {
         )}
 
         {file && (
-          <div className="mt-6 rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-5 sm:p-6">
+          <div className="mt-6 rounded-[1.75rem] bg-[var(--surface-soft)] p-5 sm:p-6">
             <div className="flex items-center gap-3 border-b border-[var(--border)] pb-4">
               <FileText size={20} className="shrink-0 text-[var(--muted)]" />
               <div className="min-w-0 flex-1">
@@ -127,7 +128,7 @@ export default function WatermarkWorkspace() {
                 <button
                   key={o.value}
                   onClick={() => setOpacity(o.value)}
-                  className={`rounded-xl border px-3 py-2.5 text-sm font-medium transition-colors ${
+                  className={`pill border px-3 py-2.5 text-sm font-medium transition-colors ${
                     opacity === o.value
                       ? "border-[var(--fg)] bg-[var(--fg)] text-white"
                       : "border-[var(--border)] hover:border-[var(--fg)]/40"
@@ -141,7 +142,7 @@ export default function WatermarkWorkspace() {
             <button
               disabled={busy}
               onClick={apply}
-              className="mt-6 w-full rounded-xl bg-black px-5 py-3.5 font-semibold text-white transition-opacity disabled:opacity-40"
+              className="mt-6 w-full pill bg-[var(--fg)] px-5 py-3.5 font-semibold text-white transition-opacity hover:opacity-85 disabled:opacity-40"
             >
               {busy ? (
                 <Loader2 className="mx-auto animate-spin" />
@@ -157,6 +158,7 @@ export default function WatermarkWorkspace() {
 
         <StatusMessage>{error}</StatusMessage>
       </section>
+      <Footer />
     </main>
   );
 }

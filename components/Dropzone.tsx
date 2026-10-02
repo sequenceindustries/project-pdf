@@ -23,7 +23,7 @@ export default function Dropzone({
         e.preventDefault();
         onFiles(Array.from(e.dataTransfer.files));
       }}
-      className="mt-8 flex cursor-pointer flex-col items-center rounded-2xl border-2 border-dashed border-[var(--border)] bg-[var(--surface)] px-4 py-10 text-center transition-colors hover:border-[var(--accent)]/50 sm:mt-10 sm:rounded-3xl sm:px-6 sm:py-14"
+      className="mt-8 flex cursor-pointer flex-col items-center rounded-[1.75rem] border-2 border-dashed border-[var(--border)] bg-[var(--surface-soft)] px-4 py-10 text-center transition-colors hover:border-[var(--fg)]/30 sm:mt-10 sm:px-6 sm:py-14"
     >
       <input
         type="file"

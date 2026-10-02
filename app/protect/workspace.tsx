@@ -3,6 +3,7 @@ import { useState } from "react";
 import { PDFDocument } from "@cantoo/pdf-lib";
 import { Download, Loader2, FileText, Lock } from "lucide-react";
 import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 import Dropzone from "@/components/Dropzone";
 import StatusMessage from "@/components/StatusMessage";
 import { isPdf, MAX_FILE_SIZE } from "@/lib/pdf-utils";
@@ -63,7 +64,7 @@ export default function ProtectWorkspace() {
       <Header />
       <section className="mx-auto max-w-4xl px-4 py-10 sm:px-6 sm:py-14">
         <div className="text-center">
-          <h1 className="font-display text-3xl font-bold sm:text-4xl">Password Protect PDF</h1>
+          <h1 className="font-display text-4xl font-bold sm:text-5xl">Password Protect PDF</h1>
           <p className="mt-3 text-[var(--muted)]">
             Encrypt a PDF so it can only be opened with a password.
           </p>
@@ -79,7 +80,7 @@ export default function ProtectWorkspace() {
         )}
 
         {file && (
-          <div className="mt-6 rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-5 sm:p-6">
+          <div className="mt-6 rounded-[1.75rem] bg-[var(--surface-soft)] p-5 sm:p-6">
             <div className="flex items-center gap-3 border-b border-[var(--border)] pb-4">
               <FileText size={20} className="shrink-0 text-[var(--muted)]" />
               <div className="min-w-0 flex-1">
@@ -120,7 +121,7 @@ export default function ProtectWorkspace() {
             <button
               disabled={busy}
               onClick={apply}
-              className="mt-6 w-full rounded-xl bg-black px-5 py-3.5 font-semibold text-white transition-opacity disabled:opacity-40"
+              className="mt-6 w-full pill bg-[var(--fg)] px-5 py-3.5 font-semibold text-white transition-opacity hover:opacity-85 disabled:opacity-40"
             >
               {busy ? (
                 <Loader2 className="mx-auto animate-spin" />
@@ -136,6 +137,7 @@ export default function ProtectWorkspace() {
 
         <StatusMessage>{error}</StatusMessage>
       </section>
+      <Footer />
     </main>
   );
 }

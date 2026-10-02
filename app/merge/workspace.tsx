@@ -3,6 +3,7 @@ import { useState } from "react";
 import { PDFDocument } from "pdf-lib";
 import { Download, Loader2, Trash2, Combine } from "lucide-react";
 import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 import Dropzone from "@/components/Dropzone";
 import StatusMessage from "@/components/StatusMessage";
 import { isPdf, MAX_FILE_SIZE } from "@/lib/pdf-utils";
@@ -52,7 +53,7 @@ export default function MergeWorkspace() {
       <Header />
       <section className="mx-auto max-w-4xl px-4 py-10 sm:px-6 sm:py-14">
         <div className="text-center">
-          <h1 className="font-display text-3xl font-bold sm:text-4xl">Merge PDF</h1>
+          <h1 className="font-display text-4xl font-bold sm:text-5xl">Merge PDF</h1>
           <p className="mt-3 text-[var(--muted)]">Combine multiple PDF files into one document.</p>
         </div>
 
@@ -65,7 +66,7 @@ export default function MergeWorkspace() {
         />
 
         {files.length > 0 && (
-          <div className="mt-6 rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-4">
+          <div className="mt-6 rounded-[1.75rem] bg-[var(--surface-soft)] p-4">
             {files.map((f, i) => (
               <div
                 key={i}
@@ -86,7 +87,7 @@ export default function MergeWorkspace() {
             <button
               disabled={busy}
               onClick={merge}
-              className="mt-4 w-full rounded-xl bg-black px-5 py-3.5 font-semibold text-white transition-opacity disabled:opacity-40"
+              className="mt-4 w-full pill bg-[var(--fg)] px-5 py-3.5 font-semibold text-white transition-opacity hover:opacity-85 disabled:opacity-40"
             >
               {busy ? (
                 <Loader2 className="mx-auto animate-spin" />
@@ -102,6 +103,7 @@ export default function MergeWorkspace() {
 
         <StatusMessage>{error}</StatusMessage>
       </section>
+      <Footer />
     </main>
   );
 }
