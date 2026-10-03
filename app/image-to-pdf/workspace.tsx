@@ -88,7 +88,7 @@ export default function ImageToPdfWorkspace() {
       <Header />
       <section className="mx-auto max-w-4xl px-4 py-10 sm:px-6 sm:py-14">
         <div className="text-center">
-          <h1 className="font-display text-4xl font-bold sm:text-5xl">JPG to PDF</h1>
+          <h1 className="font-display text-4xl font-extrabold sm:text-5xl">JPG to PDF</h1>
           <p className="mt-3 text-[var(--muted)]">
             Convert one or more images into a single PDF document.
           </p>
@@ -103,7 +103,7 @@ export default function ImageToPdfWorkspace() {
         />
 
         {items.length > 0 && (
-          <div className="mt-6 rounded-[1.75rem] bg-[var(--surface-soft)] p-4">
+          <div className="mt-6 card-chunky bg-[var(--surface-soft)] p-4">
             <p className="mb-3 px-2 text-xs text-[var(--muted)]">
               Reorder images with the arrows — this sets the page order in the PDF.
             </p>
@@ -145,7 +145,7 @@ export default function ImageToPdfWorkspace() {
             <button
               disabled={busy}
               onClick={convert}
-              className="mt-4 w-full pill bg-[var(--fg)] px-5 py-3.5 font-semibold text-white transition-opacity hover:opacity-85 disabled:opacity-40"
+              className="mt-4 w-full btn btn-primary px-5 py-3.5 disabled:opacity-40"
             >
               {busy ? (
                 <Loader2 className="mx-auto animate-spin" />

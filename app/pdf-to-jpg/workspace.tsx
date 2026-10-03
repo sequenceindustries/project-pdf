@@ -95,7 +95,7 @@ export default function PdfToJpgWorkspace() {
       <Header />
       <section className="mx-auto max-w-4xl px-4 py-10 sm:px-6 sm:py-14">
         <div className="text-center">
-          <h1 className="font-display text-4xl font-bold sm:text-5xl">PDF to JPG</h1>
+          <h1 className="font-display text-4xl font-extrabold sm:text-5xl">PDF to JPG</h1>
           <p className="mt-3 text-[var(--muted)]">
             Turn each page into a JPG image. Multi-page PDFs download as a zip.
           </p>
@@ -111,7 +111,7 @@ export default function PdfToJpgWorkspace() {
         )}
 
         {file && (
-          <div className="mt-6 rounded-[1.75rem] bg-[var(--surface-soft)] p-5 sm:p-6">
+          <div className="mt-6 card-chunky bg-[var(--surface-soft)] p-5 sm:p-6">
             <div className="flex items-center gap-3 border-b border-[var(--border)] pb-4">
               <FileText size={20} className="shrink-0 text-[var(--muted)]" />
               <div className="min-w-0 flex-1">
@@ -131,7 +131,7 @@ export default function PdfToJpgWorkspace() {
             <button
               disabled={busy}
               onClick={convert}
-              className="mt-5 w-full pill bg-[var(--fg)] px-5 py-3.5 font-semibold text-white transition-opacity hover:opacity-85 disabled:opacity-40"
+              className="mt-5 w-full btn btn-primary px-5 py-3.5 disabled:opacity-40"
             >
               {busy ? (
                 <span className="flex items-center justify-center gap-2">

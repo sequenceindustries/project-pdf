@@ -74,7 +74,7 @@ export default function Tools() {
     <main className="min-h-screen">
       <Header />
       <div className="mx-auto max-w-5xl px-4 py-14 sm:px-6 sm:py-20">
-        <h1 className="font-display text-4xl font-bold sm:text-5xl">All tools</h1>
+        <h1 className="font-display text-4xl font-extrabold sm:text-5xl">All tools</h1>
         <p className="mt-3 text-[var(--muted)]">Eight ways to handle a PDF, all running on your device.</p>
         <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2">
           {tools.map(({ title, description, href, Icon }) => (

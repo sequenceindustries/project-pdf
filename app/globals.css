@@ -1,32 +1,40 @@
 @import "tailwindcss";
 
 :root {
-  --bg: #ffffff;
+  /* Surfaces */
+  --bg: #fbfaf8;
   --surface: #ffffff;
-  --surface-soft: #eef1f7;
-  --fg: #14161b;
+  --surface-soft: #f5f3ef;
+  --fg: #181a1f;
   --muted: #6b7280;
-  --border: #e8eaf0;
-  --accent: #e5484d;
+  --border: #e8e4dc;
+
+  /* Peedf primary: a confident indigo-violet — distinctive, not fintech-green,
+     not neon. Secondary: a warm coral for contrast highlights. */
+  --accent: #4f3ff0;
+  --accent-dark: #3c2ed1;
+  --accent-soft: #eeecff;
   --accent-ink: #ffffff;
+
+  --coral: #ff6b4a;
+  --coral-dark: #e14f30;
+  --coral-soft: #ffece6;
+
+  --mint-soft: #e8f7ef;
   --success: #12b76a;
   --success-bg: #ecfdf3;
   --warn: #f79009;
 
-  --dark-bg: #12141a;
-  --dark-surface: #1b1e26;
-  --dark-border: #2a2d37;
-  --dark-muted: #9196a3;
+  --dark-bg: #15131f;
+  --dark-surface: #1f1c2c;
+  --dark-border: #332f45;
+  --dark-muted: #9a94ae;
 
-  --grad-blue: #dde9fb;
-  --grad-pink: #fbe3ec;
-  --grad-lavender: #e7e1fb;
-  --grad-mint: #e0f5ec;
-
-  --radius-sm: 0.75rem;
+  --radius-sm: 0.9rem;
   --radius-md: 1.25rem;
   --radius-lg: 1.75rem;
-  --font-display: var(--font-space-grotesk), "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+
+  --font-display: var(--font-jakarta), "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
   --font-body: var(--font-inter), "Inter", ui-sans-serif, system-ui, sans-serif;
 }
 
@@ -56,28 +64,90 @@ h3,
 
 button,
 a {
-  transition: all 0.15s ease;
+  transition: transform 0.12s ease, box-shadow 0.12s ease, opacity 0.12s ease, border-color 0.12s ease;
 }
 
 :focus-visible {
-  outline: 2px solid var(--fg);
+  outline: 2px solid var(--accent);
   outline-offset: 2px;
   border-radius: 4px;
 }
 
-/* Soft pastel cloud wash used behind the hero — one deliberate moment of
-   color, quiet everywhere else. */
-.sky-wash {
-  background:
-    radial-gradient(ellipse 70% 55% at 18% 15%, var(--grad-blue), transparent 60%),
-    radial-gradient(ellipse 60% 50% at 85% 10%, var(--grad-pink), transparent 60%),
-    radial-gradient(ellipse 65% 60% at 50% 45%, var(--grad-mint), transparent 65%),
-    radial-gradient(ellipse 55% 45% at 90% 70%, var(--grad-lavender), transparent 60%),
-    #ffffff;
+/* ---- Chunky, tactile UI language ---- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: var(--radius-sm);
+  border: 2px solid transparent;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.btn:active {
+  transform: translateY(2px);
 }
 
-.pill {
+.btn-primary {
+  background: var(--accent);
+  border-color: var(--accent-dark);
+  color: var(--accent-ink);
+  box-shadow: 0 4px 0 0 var(--accent-dark);
+}
+.btn-primary:hover {
+  background: #5a4bf5;
+}
+.btn-primary:active {
+  box-shadow: 0 2px 0 0 var(--accent-dark);
+}
+.btn-primary:disabled {
+  opacity: 0.45;
+  box-shadow: 0 4px 0 0 var(--accent-dark);
+  transform: none;
+}
+
+.btn-dark {
+  background: var(--fg);
+  border-color: #000000;
+  color: #ffffff;
+  box-shadow: 0 4px 0 0 #000000;
+}
+.btn-dark:active {
+  box-shadow: 0 2px 0 0 #000000;
+}
+.btn-dark:disabled {
+  opacity: 0.45;
+  transform: none;
+}
+
+.btn-outline {
+  background: var(--surface);
+  border-color: var(--border);
+  color: var(--fg);
+  box-shadow: 0 4px 0 0 var(--border);
+}
+.btn-outline:hover {
+  border-color: #d7d2c6;
+}
+.btn-outline:active {
+  box-shadow: 0 2px 0 0 var(--border);
+}
+
+.card-chunky {
+  background: var(--surface);
+  border: 2px solid var(--border);
+  border-radius: var(--radius-md);
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
   border-radius: 999px;
+  border: 2px solid var(--border);
+  font-weight: 600;
+  font-size: 0.8125rem;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -88,5 +158,15 @@ a {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+}
+
+@keyframes float-slow {
+  0%,
+  100% {
+    transform: translateY(0) rotate(var(--r, 0deg));
+  }
+  50% {
+    transform: translateY(-10px) rotate(var(--r, 0deg));
   }
 }

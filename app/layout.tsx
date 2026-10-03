@@ -1,6 +1,6 @@
 import "./globals.css";
 import type { Metadata } from "next";
-import { Inter, Space_Grotesk } from "next/font/google";
+import { Inter, Plus_Jakarta_Sans } from "next/font/google";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -8,21 +8,21 @@ const inter = Inter({
   display: "swap",
 });
 
-const spaceGrotesk = Space_Grotesk({
+const jakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
-  variable: "--font-space-grotesk",
+  variable: "--font-jakarta",
   display: "swap",
-  weight: ["500", "700"],
+  weight: ["600", "700", "800"],
 });
 
 export const metadata: Metadata = {
-  title: "PDF. — Free PDF Tools",
-  description: "Merge, split and convert PDFs with simple browser-first tools.",
+  title: "peedf — PDFs, without the headache",
+  description: "Merge, split, compress and convert PDFs with simple browser-first tools.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${inter.variable} ${spaceGrotesk.variable}`}>
+    <html lang="en" className={`${inter.variable} ${jakarta.variable}`}>
       <body>{children}</body>
     </html>
   );

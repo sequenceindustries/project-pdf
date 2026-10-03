@@ -154,7 +154,7 @@ export default function CompressWorkspace() {
       <Header />
       <section className="mx-auto max-w-4xl px-4 py-10 sm:px-6 sm:py-14">
         <div className="text-center">
-          <h1 className="font-display text-4xl font-bold sm:text-5xl">Compress PDF</h1>
+          <h1 className="font-display text-4xl font-extrabold sm:text-5xl">Compress PDF</h1>
           <p className="mt-3 text-[var(--muted)]">
             Shrink file size by recompressing pages, entirely in your browser.
           </p>
@@ -170,7 +170,7 @@ export default function CompressWorkspace() {
         )}
 
         {file && (
-          <div className="mt-6 rounded-[1.75rem] bg-[var(--surface-soft)] p-5 sm:p-6">
+          <div className="mt-6 card-chunky bg-[var(--surface-soft)] p-5 sm:p-6">
             <div className="flex items-center gap-3 border-b border-[var(--border)] pb-4">
               <FileText size={20} className="shrink-0 text-[var(--muted)]" />
               <div className="min-w-0 flex-1">
@@ -197,10 +197,10 @@ export default function CompressWorkspace() {
                     <button
                       key={l.label}
                       onClick={() => setLevelIndex(i)}
-                      className={`pill border px-3 py-2.5 text-sm font-medium transition-colors ${
+                      className={`pill border-2 px-3 py-2.5 text-sm font-bold transition-colors ${
                         levelIndex === i
-                          ? "border-[var(--fg)] bg-[var(--fg)] text-white"
-                          : "border-[var(--border)] hover:border-[var(--fg)]/40"
+                          ? "border-[var(--accent-dark)] bg-[var(--accent)] text-white"
+                          : "border-[var(--border)] bg-[var(--surface)] hover:border-[var(--accent)]/50"
                       }`}
                     >
                       {l.label}
@@ -216,7 +216,7 @@ export default function CompressWorkspace() {
                 <button
                   disabled={busy}
                   onClick={compress}
-                  className="mt-5 w-full pill bg-[var(--fg)] px-5 py-3.5 font-semibold text-white transition-opacity hover:opacity-85 disabled:opacity-40"
+                  className="mt-5 w-full btn btn-primary px-5 py-3.5 disabled:opacity-40"
                 >
                   {busy ? (
                     <span className="flex items-center justify-center gap-2">
@@ -256,14 +256,14 @@ export default function CompressWorkspace() {
                 )}
                 <button
                   onClick={download}
-                  className="mt-4 w-full pill bg-[var(--fg)] px-5 py-3.5 font-semibold text-white hover:opacity-85"
+                  className="mt-4 w-full btn btn-primary px-5 py-3.5"
                 >
                   <Download className="mr-2 inline" size={17} />
                   Download compressed PDF
                 </button>
                 <button
                   onClick={() => setResult(null)}
-                  className="mt-2 w-full pill border border-[var(--border)] px-5 py-3 text-sm font-medium text-[var(--muted)] hover:border-[var(--fg)]/40"
+                  className="mt-2 w-full btn btn-outline px-5 py-3 text-sm text-[var(--muted)]"
                 >
                   Try a different level
                 </button>
