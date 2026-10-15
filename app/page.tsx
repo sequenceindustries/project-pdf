@@ -18,7 +18,7 @@ export default function Home() {
       <section className="relative overflow-hidden">
         <div aria-hidden className="halftone pointer-events-none absolute inset-x-0 bottom-0 h-2/3" />
         <div className="relative mx-auto grid max-w-5xl gap-8 px-4 pb-16 pt-10 sm:px-6 sm:pb-24 sm:pt-14 md:grid-cols-[1.05fr_1fr] md:items-start md:gap-10">
-          <div>
+          <div className="min-w-0">
             <h1 className="text-[3.4rem] leading-[0.95] sm:text-[5rem] md:text-[5.5rem]">
               Your PDFs. Your instructions. One AI workspace.
             </h1>
@@ -26,7 +26,7 @@ export default function Home() {
               Upload a PDF. Tell peedf what you need. Get it done, with every claim traced back to a page.
             </p>
           </div>
-          <div className="rounded-[2rem] bg-[var(--surface)] p-4 sm:p-6 md:sticky md:top-24">
+          <div className="min-w-0 overflow-hidden rounded-[2rem] bg-[var(--surface)] p-4 sm:p-6 md:sticky md:top-24">
             <Workspace />
           </div>
         </div>
@@ -59,7 +59,7 @@ export default function Home() {
 
       <section className="mx-auto max-w-5xl px-4 pb-20 sm:px-6 sm:pb-28">
         <Link href="/tools" className="group flex flex-col gap-6 rounded-[2.5rem] border-[1.5px] border-dotted border-[var(--fg)] p-6 transition-colors hover:bg-[var(--surface)] sm:flex-row sm:items-center sm:justify-between sm:p-10">
-          <div>
+          <div className="min-w-0">
             <h2 className="text-4xl sm:text-5xl">Just need a quick tool?</h2>
             <p className="mt-3 max-w-md text-base leading-7 text-[var(--muted)]">
               Merge, split, compress, rotate, watermark, protect and convert. Free, and your file never leaves your browser.

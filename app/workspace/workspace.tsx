@@ -265,5 +265,5 @@ export default function Workspace() {
       </>
   );
 
-  return <div id="workspace" className="scroll-mt-24">{inner}</div>;
+  return <div id="workspace" className="min-w-0 scroll-mt-24">{inner}</div>;
 }
