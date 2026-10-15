@@ -153,6 +153,51 @@ a {
   mask-image: linear-gradient(to bottom, transparent, #000 40%);
 }
 
+/* ---- Sliding suggestion rows ---- */
+.marquee {
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 7%, #000 93%, transparent);
+  mask-image: linear-gradient(to right, transparent, #000 7%, #000 93%, transparent);
+}
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee var(--marquee-speed, 70s) linear infinite;
+}
+.marquee-group {
+  display: flex;
+  gap: 0.5rem;
+  padding-right: 0.5rem;
+}
+.marquee-rev .marquee-track {
+  animation-direction: reverse;
+}
+.marquee:hover .marquee-track,
+.marquee:focus-within .marquee-track {
+  animation-play-state: paused;
+}
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .marquee {
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+  .marquee-track {
+    animation: none !important;
+    width: auto;
+  }
+  .marquee-group {
+    flex-wrap: wrap;
+  }
+  .marquee-group[aria-hidden="true"] {
+    display: none;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

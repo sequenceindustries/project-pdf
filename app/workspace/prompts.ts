@@ -11,4 +11,3 @@ export const PROMPT_GROUPS: { title: string; status: PromptStatus; prompts: stri
   { title: "Translate documents", status: "soon", prompts: ["Translate this into French"] },
 ];
 
-export const STATUS_LABEL: Record<PromptStatus, string> = { ai: "Live", browser: "In your browser", soon: "Coming soon" };

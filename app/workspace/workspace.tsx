@@ -4,11 +4,13 @@ import Link from "next/link";
 import { Download, FileText, Loader2, Sparkles, X, CheckCircle2, AlertTriangle, Circle } from "lucide-react";
 import Dropzone from "@/components/Dropzone";
 import { isPdf } from "@/lib/pdf-utils";
-import { PROMPT_GROUPS, STATUS_LABEL } from "./prompts";
+import { PROMPT_GROUPS } from "./prompts";
 
 const MAX_AI_BYTES = 20 * 1024 * 1024;
 const STORE = "peedf.job";
-const QUICK = ["Summarise this document", "What are the key risks?", "List every date and amount"];
+// Live prompts first, interleaved across two sliding rows.
+const ALL = PROMPT_GROUPS.flatMap((g) => g.prompts.map((text) => ({ text, status: g.status })));
+const ROWS = [ALL.filter((_, i) => i % 2 === 0), ALL.filter((_, i) => i % 2 === 1)];
 
 type Point = { text: string; pages: number[]; quote: string; verified: boolean };
 type Result = { headline: string; summary: string; answer: string | null; points: Point[]; uncertainties: string[]; sensitive: boolean };
@@ -166,30 +168,28 @@ export default function Workspace() {
               {uploading ? <Loader2 className="mx-auto animate-spin" /> : <><Sparkles className="mr-2 inline" size={17} />Do it</>}
             </button>
 
-            <div className="mt-5">
-              <div className="flex flex-wrap gap-2">
-                {QUICK.map((p) => (
-                  <button key={p} onClick={() => choose(p)} className="chip cursor-pointer hover:bg-[var(--surface-soft)]">{p}</button>
-                ))}
-              </div>
-              <details className="mt-4 text-sm">
-                <summary className="cursor-pointer font-medium">More ideas</summary>
-                <div className="mt-4 space-y-4">
-                  {PROMPT_GROUPS.map((g) => (
-                    <div key={g.title}>
-                      <div className="font-bold">{g.title} <span className="font-normal text-[var(--muted)]">· {STATUS_LABEL[g.status]}</span></div>
-                      <div className="mt-2 flex flex-wrap gap-2">
-                        {g.prompts.map((p) => (
-                          <button key={p} onClick={() => choose(p)} className="chip cursor-pointer hover:bg-[var(--surface-soft)]">{p}</button>
+            <div className="-mx-4 mt-5 space-y-2 sm:-mx-6" aria-label="Suggestions">
+              {[0, 1].map((row) => (
+                <div key={row} className={`marquee ${row ? "marquee-rev" : ""}`} style={{ ["--marquee-speed" as string]: row ? "85s" : "70s" }}>
+                  <div className="marquee-track">
+                    {[false, true].map((dup) => (
+                      <div key={String(dup)} className="marquee-group" aria-hidden={dup || undefined}>
+                        {ROWS[row].map((p) => (
+                          <button
+                            key={p.text}
+                            tabIndex={dup ? -1 : 0}
+                            onClick={() => choose(p.text)}
+                            className="chip shrink-0 cursor-pointer whitespace-nowrap hover:bg-[var(--surface-soft)]"
+                          >
+                            {p.text}
+                            {p.status === "soon" && <span className="text-[var(--muted)]">· soon</span>}
+                          </button>
                         ))}
                       </div>
-                    </div>
-                  ))}
-                  <p className="text-xs text-[var(--muted)]">
-                    Today peedf can summarise, answer questions about and extract facts from text-based PDFs. File edits are handed to the in-browser tools; translation, comparison and OCR are coming.
-                  </p>
+                    ))}
+                  </div>
                 </div>
-              </details>
+              ))}
             </div>
           </>
         )}
