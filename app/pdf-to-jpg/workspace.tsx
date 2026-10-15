@@ -1,13 +1,12 @@
 "use client";
 import { useState } from "react";
-import { Download, Loader2, FileText, ImageDown } from "lucide-react";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+import { Loader2, FileText, ImageDown } from "lucide-react";
 import Dropzone from "@/components/Dropzone";
 import StatusMessage from "@/components/StatusMessage";
-import { isPdf, MAX_FILE_SIZE } from "@/lib/pdf-utils";
+import { baseName, downloadBlob, isPdf, loadPdfjs, MAX_FILE_SIZE } from "@/lib/pdf-utils";
+import { durationBand, pageBand, sizeBand, track } from "@/lib/analytics";
 
-const PDFJS_VERSION = "4.10.38";
+const TOOL = "pdf-to-jpg";
 
 export default function PdfToJpgWorkspace() {
   const [file, setFile] = useState<File | null>(null);
@@ -21,13 +20,16 @@ export default function PdfToJpgWorkspace() {
     if (!f) return;
     if (!isPdf(f)) {
       setError("Please choose a PDF file.");
+      track("file_rejected", { tool: TOOL, reason: "type" });
       return;
     }
     if (f.size > MAX_FILE_SIZE) {
       setError("File is larger than the 50 MB limit.");
+      track("file_rejected", { tool: TOOL, reason: "size" });
       return;
     }
     setFile(f);
+    track("file_added", { tool: TOOL, file_count: 1, size_band: sizeBand(f.size) });
   }
 
   async function convert() {
@@ -35,13 +37,13 @@ export default function PdfToJpgWorkspace() {
     setBusy(true);
     setError("");
     setProgress("Loading PDF…");
+    const started = performance.now();
+    track("tool_run", { tool: TOOL });
     try {
-      const pdfjsLib = await import("pdfjs-dist");
-      pdfjsLib.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${PDFJS_VERSION}/build/pdf.worker.min.mjs`;
-
+      const pdfjsLib = await loadPdfjs();
       const data = await file.arrayBuffer();
       const pdf = await pdfjsLib.getDocument({ data }).promise;
-      const baseName = file.name.replace(/\.pdf$/i, "");
+      const name = baseName(file);
       const jpegBlobs: Blob[] = [];
 
       for (let i = 1; i <= pdf.numPages; i++) {
@@ -58,32 +60,31 @@ export default function PdfToJpgWorkspace() {
           canvas.toBlob((b) => (b ? resolve(b) : reject(new Error("toBlob failed"))), "image/jpeg", 0.92)
         );
         jpegBlobs.push(blob);
+        canvas.width = 0;
+        canvas.height = 0;
       }
 
       if (jpegBlobs.length === 1) {
-        const url = URL.createObjectURL(jpegBlobs[0]);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = `${baseName}.jpg`;
-        a.click();
-        setTimeout(() => URL.revokeObjectURL(url), 1000);
+        downloadBlob(jpegBlobs[0], `${name}.jpg`);
       } else {
         setProgress("Packaging pages into a zip…");
         const JSZip = (await import("jszip")).default;
         const zip = new JSZip();
         jpegBlobs.forEach((blob, i) => {
-          zip.file(`${baseName}-page-${i + 1}.jpg`, blob);
+          zip.file(`${name}-page-${i + 1}.jpg`, blob);
         });
         const zipBlob = await zip.generateAsync({ type: "blob" });
-        const url = URL.createObjectURL(zipBlob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = `${baseName}-pages.zip`;
-        a.click();
-        setTimeout(() => URL.revokeObjectURL(url), 1000);
+        downloadBlob(zipBlob, `${name}-pages.zip`);
       }
+      track("tool_complete", {
+        tool: TOOL,
+        output: jpegBlobs.length === 1 ? "jpg" : "zip",
+        page_band: pageBand(jpegBlobs.length),
+        duration_band: durationBand(performance.now() - started),
+      });
     } catch {
       setError("Couldn't convert that PDF. It may be corrupted or password-protected.");
+      track("tool_error", { tool: TOOL, reason: "unreadable" });
     } finally {
       setBusy(false);
       setProgress("");
@@ -91,66 +92,61 @@ export default function PdfToJpgWorkspace() {
   }
 
   return (
-    <main className="min-h-screen">
-      <Header />
-      <section className="mx-auto max-w-4xl px-4 py-10 sm:px-6 sm:py-14">
-        <div className="text-center">
-          <h1 className="font-display text-4xl font-extrabold sm:text-5xl">PDF to JPG</h1>
-          <p className="mt-3 text-[var(--muted)]">
-            Turn each page into a JPG image. Multi-page PDFs download as a zip.
-          </p>
-        </div>
+    <section className="mx-auto max-w-4xl px-4 py-10 sm:px-6 sm:py-14">
+      <div className="text-center">
+        <h1 className="font-display text-4xl font-extrabold sm:text-5xl">PDF to JPG</h1>
+        <p className="mt-3 text-[var(--muted)]">
+          Turn each page into a JPG image. Multi-page PDFs download as a zip.
+        </p>
+      </div>
 
-        {!file && (
-          <Dropzone
-            accept="application/pdf,.pdf"
-            onFiles={handleFiles}
-            title="Drop a PDF here"
-            subtitle="or click to browse"
-          />
-        )}
+      {!file && (
+        <Dropzone accept="application/pdf,.pdf" onFiles={handleFiles} title="Drop a PDF here" subtitle="or click to browse" />
+      )}
 
-        {file && (
-          <div className="mt-6 card-chunky bg-[var(--surface-soft)] p-5 sm:p-6">
-            <div className="flex items-center gap-3 border-b border-[var(--border)] pb-4">
-              <FileText size={20} className="shrink-0 text-[var(--muted)]" />
-              <div className="min-w-0 flex-1">
-                <div className="truncate text-sm font-medium">{file.name}</div>
-              </div>
-              <button
-                onClick={() => {
-                  setFile(null);
-                  setError("");
-                }}
-                className="shrink-0 text-sm text-[var(--muted)] underline"
-              >
-                Change file
-              </button>
+      {file && (
+        <div className="mt-6 card-chunky bg-[var(--surface-soft)] p-5 sm:p-6">
+          <div className="flex items-center gap-3 border-b border-[var(--border)] pb-4">
+            <FileText size={20} className="shrink-0 text-[var(--muted)]" aria-hidden="true" />
+            <div className="min-w-0 flex-1">
+              <div className="truncate text-sm font-medium">{file.name}</div>
             </div>
-
             <button
+              type="button"
               disabled={busy}
-              onClick={convert}
-              className="mt-5 w-full btn btn-primary px-5 py-3.5 disabled:opacity-40"
+              onClick={() => {
+                setFile(null);
+                setError("");
+              }}
+              className="shrink-0 text-sm text-[var(--muted)] underline disabled:opacity-40"
             >
-              {busy ? (
-                <span className="flex items-center justify-center gap-2">
-                  <Loader2 className="animate-spin" size={17} />
-                  {progress || "Converting…"}
-                </span>
-              ) : (
-                <>
-                  <ImageDown className="mr-2 inline" size={17} />
-                  Convert & download
-                </>
-              )}
+              Change file
             </button>
           </div>
-        )}
 
-        <StatusMessage>{error}</StatusMessage>
-      </section>
-      <Footer />
-    </main>
+          <button
+            type="button"
+            disabled={busy}
+            aria-busy={busy}
+            onClick={convert}
+            className="mt-5 w-full btn btn-primary px-5 py-3.5 disabled:opacity-40"
+          >
+            {busy ? (
+              <span className="flex items-center justify-center gap-2" aria-live="polite">
+                <Loader2 className="animate-spin" size={17} aria-hidden="true" />
+                {progress || "Converting…"}
+              </span>
+            ) : (
+              <>
+                <ImageDown className="mr-2 inline" size={17} aria-hidden="true" />
+                Convert & download
+              </>
+            )}
+          </button>
+        </div>
+      )}
+
+      <StatusMessage>{error}</StatusMessage>
+    </section>
   );
 }

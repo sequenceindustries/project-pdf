@@ -1,88 +1,56 @@
 import type { Metadata } from "next";
-import {
-  Combine,
-  Scissors,
-  Minimize2,
-  ImagePlus,
-  Stamp,
-  RotateCw,
-  ImageDown,
-  Lock,
-} from "lucide-react";
 import Header from "@/components/Header";
-import ToolCard from "@/components/ToolCard";
+import ToolGrid from "@/components/ToolGrid";
 import Footer from "@/components/Footer";
+import JsonLd from "@/components/JsonLd";
+import { pageMetadata } from "@/lib/seo";
+import { absoluteUrl } from "@/lib/site";
+import { tools } from "@/lib/tools";
 
-export const metadata: Metadata = {
-  title: "All tools",
-  description: "Every PDF tool on peedf — merge, split, compress, convert, watermark and more.",
-};
-
-const tools = [
-  {
-    title: "Compress PDF",
-    description: "Shrink file size by recompressing pages.",
-    href: "/compress",
-    Icon: Minimize2,
-  },
-  {
-    title: "Merge PDF",
-    description: "Combine multiple PDFs into one document.",
-    href: "/merge",
-    Icon: Combine,
-  },
-  {
-    title: "Split PDF",
-    description: "Extract pages or ranges from a PDF.",
-    href: "/split",
-    Icon: Scissors,
-  },
-  {
-    title: "JPG to PDF",
-    description: "Turn images into a PDF.",
-    href: "/image-to-pdf",
-    Icon: ImagePlus,
-  },
-  {
-    title: "Watermark PDF",
-    description: "Stamp text across every page.",
-    href: "/watermark",
-    Icon: Stamp,
-  },
-  {
-    title: "Rotate PDF",
-    description: "Rotate every page at once.",
-    href: "/rotate",
-    Icon: RotateCw,
-  },
-  {
-    title: "PDF to JPG",
-    description: "Export pages as JPG images.",
-    href: "/pdf-to-jpg",
-    Icon: ImageDown,
-  },
-  {
-    title: "Password Protect",
-    description: "Encrypt a PDF with a password.",
-    href: "/protect",
-    Icon: Lock,
-  },
-] as const;
+export const metadata: Metadata = pageMetadata({
+  path: "/tools",
+  title: "All PDF tools",
+  description:
+    "Every peedf tool in one place: compress, merge, split, rotate, watermark, password-protect, PDF to JPG and JPG to PDF. All eight run on your own device.",
+});
 
 export default function Tools() {
   return (
-    <main className="min-h-screen">
+    <>
       <Header />
-      <div className="mx-auto max-w-5xl px-4 py-14 sm:px-6 sm:py-20">
-        <h1 className="font-display text-4xl font-extrabold sm:text-5xl">All tools</h1>
-        <p className="mt-3 text-[var(--muted)]">Eight ways to handle a PDF, all running on your device.</p>
-        <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2">
-          {tools.map(({ title, description, href, Icon }) => (
-            <ToolCard key={title} title={title} description={description} href={href} icon={Icon} />
-          ))}
+      <main id="main" className="min-h-screen">
+        <div className="mx-auto max-w-5xl px-4 py-14 sm:px-6 sm:py-20">
+          <h1 className="font-display text-4xl font-extrabold sm:text-5xl">All tools</h1>
+          <p className="mt-3 text-[var(--muted)]">Eight ways to handle a PDF, all running on your device.</p>
+          <div className="mt-10">
+            <ToolGrid headingLevel="h2" />
+          </div>
         </div>
-      </div>
+      </main>
       <Footer />
-    </main>
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            { "@type": "ListItem", position: 1, name: "Home", item: absoluteUrl("/") },
+            { "@type": "ListItem", position: 2, name: "All tools", item: absoluteUrl("/tools") },
+          ],
+        }}
+      />
+      {/* Keeps the tool list in sync with the registry for crawlers that read ItemList. */}
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "ItemList",
+          itemListElement: tools.map((t, i) => ({
+            "@type": "ListItem",
+            position: i + 1,
+            url: absoluteUrl(`/${t.slug}`),
+            name: t.name,
+          })),
+        }}
+      />
+    </>
   );
 }

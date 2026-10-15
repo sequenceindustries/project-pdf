@@ -1,12 +1,12 @@
 "use client";
 import { useState } from "react";
-import { PDFDocument, rgb, StandardFonts, degrees } from "pdf-lib";
-import { Download, Loader2, FileText, Stamp } from "lucide-react";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+import { Loader2, FileText, Stamp } from "lucide-react";
 import Dropzone from "@/components/Dropzone";
 import StatusMessage from "@/components/StatusMessage";
-import { isPdf, MAX_FILE_SIZE } from "@/lib/pdf-utils";
+import { baseName, downloadBlob, isPdf, loadPdfLib, MAX_FILE_SIZE } from "@/lib/pdf-utils";
+import { durationBand, pageBand, sizeBand, track } from "@/lib/analytics";
+
+const TOOL = "watermark";
 
 const OPACITIES = [
   { label: "Light", value: 0.15 },
@@ -27,32 +27,48 @@ export default function WatermarkWorkspace() {
     if (!f) return;
     if (!isPdf(f)) {
       setError("Please choose a PDF file.");
+      track("file_rejected", { tool: TOOL, reason: "type" });
       return;
     }
     if (f.size > MAX_FILE_SIZE) {
       setError("File is larger than the 50 MB limit.");
+      track("file_rejected", { tool: TOOL, reason: "size" });
       return;
     }
     setFile(f);
+    track("file_added", { tool: TOOL, file_count: 1, size_band: sizeBand(f.size) });
   }
 
   async function apply() {
     if (!file) return;
-    if (!text.trim()) {
+    const value = text.trim();
+    if (!value) {
       setError("Enter watermark text.");
       return;
     }
+    const intensity = OPACITIES.find((o) => o.value === opacity)?.label.toLowerCase() ?? "custom";
     setBusy(true);
     setError("");
+    const started = performance.now();
+    // The watermark text itself is never sent to analytics.
+    track("tool_run", { tool: TOOL, option: intensity });
     try {
+      const { PDFDocument, rgb, StandardFonts, degrees } = await loadPdfLib();
       const doc = await PDFDocument.load(await file.arrayBuffer());
       const font = await doc.embedFont(StandardFonts.HelveticaBold);
+      try {
+        font.encodeText(value);
+      } catch {
+        setError("That text uses characters the built-in font can't draw. Try standard letters and numbers.");
+        track("tool_error", { tool: TOOL, reason: "input" });
+        return;
+      }
       const pages = doc.getPages();
       for (const page of pages) {
         const { width, height } = page.getSize();
         const fontSize = Math.max(24, Math.min(width, height) / 8);
-        const textWidth = font.widthOfTextAtSize(text, fontSize);
-        page.drawText(text, {
+        const textWidth = font.widthOfTextAtSize(value, fontSize);
+        page.drawText(value, {
           x: width / 2 - textWidth / 2,
           y: height / 2,
           size: fontSize,
@@ -63,72 +79,81 @@ export default function WatermarkWorkspace() {
         });
       }
       const blob = new Blob([(await doc.save()) as BlobPart], { type: "application/pdf" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = file.name.replace(/\.pdf$/i, "") + "-watermarked.pdf";
-      a.click();
-      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      downloadBlob(blob, `${baseName(file)}-watermarked.pdf`);
+      track("tool_complete", {
+        tool: TOOL,
+        option: intensity,
+        output: "pdf",
+        page_band: pageBand(pages.length),
+        duration_band: durationBand(performance.now() - started),
+      });
     } catch {
       setError("Couldn't watermark that PDF. It may be corrupted or password-protected.");
+      track("tool_error", { tool: TOOL, reason: "unreadable" });
     } finally {
       setBusy(false);
     }
   }
 
   return (
-    <main className="min-h-screen">
-      <Header />
-      <section className="mx-auto max-w-4xl px-4 py-10 sm:px-6 sm:py-14">
-        <div className="text-center">
-          <h1 className="font-display text-4xl font-extrabold sm:text-5xl">Watermark PDF</h1>
-          <p className="mt-3 text-[var(--muted)]">
-            Stamp text across every page, entirely in your browser.
-          </p>
-        </div>
+    <section className="mx-auto max-w-4xl px-4 py-10 sm:px-6 sm:py-14">
+      <div className="text-center">
+        <h1 className="font-display text-4xl font-extrabold sm:text-5xl">Watermark PDF</h1>
+        <p className="mt-3 text-[var(--muted)]">Stamp text across every page, entirely in your browser.</p>
+      </div>
 
-        {!file && (
-          <Dropzone
-            accept="application/pdf,.pdf"
-            onFiles={handleFiles}
-            title="Drop a PDF here"
-            subtitle="or click to browse"
-          />
-        )}
+      {!file && (
+        <Dropzone accept="application/pdf,.pdf" onFiles={handleFiles} title="Drop a PDF here" subtitle="or click to browse" />
+      )}
 
-        {file && (
-          <div className="mt-6 card-chunky bg-[var(--surface-soft)] p-5 sm:p-6">
-            <div className="flex items-center gap-3 border-b border-[var(--border)] pb-4">
-              <FileText size={20} className="shrink-0 text-[var(--muted)]" />
-              <div className="min-w-0 flex-1">
-                <div className="truncate text-sm font-medium">{file.name}</div>
-              </div>
-              <button
-                onClick={() => {
-                  setFile(null);
-                  setError("");
-                }}
-                className="shrink-0 text-sm text-[var(--muted)] underline"
-              >
-                Change file
-              </button>
+      {file && (
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            apply();
+          }}
+          className="mt-6 card-chunky bg-[var(--surface-soft)] p-5 sm:p-6"
+        >
+          <div className="flex items-center gap-3 border-b border-[var(--border)] pb-4">
+            <FileText size={20} className="shrink-0 text-[var(--muted)]" aria-hidden="true" />
+            <div className="min-w-0 flex-1">
+              <div className="truncate text-sm font-medium">{file.name}</div>
             </div>
+            <button
+              type="button"
+              disabled={busy}
+              onClick={() => {
+                setFile(null);
+                setError("");
+              }}
+              className="shrink-0 text-sm text-[var(--muted)] underline disabled:opacity-40"
+            >
+              Change file
+            </button>
+          </div>
 
-            <label className="mt-5 block text-sm font-medium">Watermark text</label>
-            <input
-              value={text}
-              onChange={(e) => setText(e.target.value)}
-              maxLength={60}
-              className="mt-2 w-full rounded-xl border border-[var(--border)] px-4 py-3 text-sm outline-none focus:border-[var(--accent)]"
-            />
+          <label htmlFor="wm-text" className="mt-5 block text-sm font-medium">
+            Watermark text
+          </label>
+          <input
+            id="wm-text"
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            maxLength={60}
+            autoComplete="off"
+            className="mt-2 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-3 text-base outline-none focus:border-[var(--accent)] sm:text-sm"
+          />
 
-            <label className="mt-5 block text-sm font-medium">Intensity</label>
+          <fieldset className="mt-5">
+            <legend className="block text-sm font-medium">Intensity</legend>
             <div className="mt-2 grid grid-cols-3 gap-2">
               {OPACITIES.map((o) => (
                 <button
+                  type="button"
                   key={o.value}
+                  aria-pressed={opacity === o.value}
                   onClick={() => setOpacity(o.value)}
-                  className={`pill border-2 px-3 py-2.5 text-sm font-bold transition-colors ${
+                  className={`rounded-[0.9rem] border-2 px-3 py-2.5 text-sm font-bold transition-colors ${
                     opacity === o.value
                       ? "border-[var(--accent-dark)] bg-[var(--accent)] text-white"
                       : "border-[var(--border)] bg-[var(--surface)] hover:border-[var(--accent)]/50"
@@ -138,27 +163,30 @@ export default function WatermarkWorkspace() {
                 </button>
               ))}
             </div>
+          </fieldset>
 
-            <button
-              disabled={busy}
-              onClick={apply}
-              className="mt-6 w-full btn btn-primary px-5 py-3.5 disabled:opacity-40"
-            >
-              {busy ? (
-                <Loader2 className="mx-auto animate-spin" />
-              ) : (
-                <>
-                  <Stamp className="mr-2 inline" size={17} />
-                  Apply & download
-                </>
-              )}
-            </button>
-          </div>
-        )}
+          <button
+            type="submit"
+            disabled={busy}
+            aria-busy={busy}
+            className="mt-6 w-full btn btn-primary px-5 py-3.5 disabled:opacity-40"
+          >
+            {busy ? (
+              <>
+                <Loader2 className="mx-auto animate-spin" aria-hidden="true" />
+                <span className="sr-only">Applying watermark…</span>
+              </>
+            ) : (
+              <>
+                <Stamp className="mr-2 inline" size={17} aria-hidden="true" />
+                Apply & download
+              </>
+            )}
+          </button>
+        </form>
+      )}
 
-        <StatusMessage>{error}</StatusMessage>
-      </section>
-      <Footer />
-    </main>
+      <StatusMessage>{error}</StatusMessage>
+    </section>
   );
 }
