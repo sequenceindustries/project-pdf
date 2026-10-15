@@ -10,9 +10,14 @@ export default function Header() {
           </span>
           peedf
         </Link>
-        <Link href="/tools" className="btn btn-dark px-4 py-2 text-sm sm:px-5">
-          All tools
-        </Link>
+        <nav className="flex items-center gap-2">
+          <Link href="/workspace" className="btn btn-outline px-4 py-2 text-sm sm:px-5">
+            AI workspace
+          </Link>
+          <Link href="/tools" className="btn btn-dark px-4 py-2 text-sm sm:px-5">
+            All tools
+          </Link>
+        </nav>
       </header>
     </div>
   );

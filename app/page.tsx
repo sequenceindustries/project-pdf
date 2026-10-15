@@ -72,18 +72,18 @@ export default function Home() {
 
       <section className="mx-auto grid max-w-5xl grid-cols-1 items-center gap-10 px-4 pb-16 pt-14 sm:px-6 sm:pb-24 sm:pt-20 md:grid-cols-2 md:gap-6">
         <div className="text-center md:text-left">
-          <h1 className="font-display mx-auto max-w-md text-5xl font-extrabold leading-[1.05] sm:text-6xl md:mx-0">
-            PDFs, without the headache.
+          <h1 className="font-display mx-auto max-w-lg text-4xl font-extrabold leading-[1.08] sm:text-5xl md:mx-0">
+            Your PDFs. Your instructions. One AI workspace.
           </h1>
           <p className="mx-auto mt-5 max-w-sm text-base leading-7 text-[var(--muted)] sm:text-lg md:mx-0">
-            Simple tools for merging, splitting, compressing, converting and managing your PDFs.
+            Upload a PDF, tell peedf what you need, get it done. Plus simple browser tools for merging, splitting, compressing and converting.
           </p>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3 md:justify-start">
-            <a href="#tools" className="btn btn-primary px-7 py-3.5 text-base">
-              Choose a tool
+            <a href="/workspace" className="btn btn-primary px-7 py-3.5 text-base">
+              Open the AI workspace
             </a>
-            <a href="#how" className="btn btn-outline px-7 py-3.5 text-base">
-              How it works
+            <a href="#tools" className="btn btn-outline px-7 py-3.5 text-base">
+              Browse tools
             </a>
           </div>
         </div>
@@ -104,7 +104,7 @@ export default function Home() {
           {[
             { step: "1", title: "Drop a file", body: "Drag your PDF or image in, or click to browse." },
             { step: "2", title: "Pick a tool", body: "Merge, split, compress, convert — whatever you need." },
-            { step: "3", title: "Download", body: "Your file never leaves the browser. Nothing is uploaded." },
+            { step: "3", title: "Download", body: "Browser tools never upload your file. AI jobs send extracted text for processing." },
           ].map((s) => (
             <div key={s.step} className="card-chunky p-6 text-center">
               <div className="btn btn-primary mx-auto h-9 w-9 p-0 text-sm">{s.step}</div>
@@ -122,12 +122,12 @@ export default function Home() {
             Coming next
           </div>
           <h2 className="font-display mt-6 text-3xl font-extrabold leading-tight sm:text-4xl md:text-5xl">
-            From file tools to a document
+            From file tools to documents
             <br className="hidden sm:block" /> you can talk to.
           </h2>
           <p className="mx-auto mt-5 max-w-xl text-base leading-7 text-[var(--dark-muted)] sm:text-lg">
-            OCR, page-level editing and AI document chat are on the roadmap —
-            the same browser-first, nothing-uploaded approach, applied further.
+            Summaries and questions are live. OCR, translation, comparison and
+            multi-step workflows are on the roadmap.
           </p>
         </div>
       </section>

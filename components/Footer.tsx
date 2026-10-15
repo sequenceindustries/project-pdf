@@ -7,7 +7,7 @@ export default function Footer() {
         <div>
           <span className="font-display text-sm font-extrabold text-white">peedf</span>
           <p className="mt-1 text-xs leading-5">
-            Every tool runs in your browser. Files are never uploaded anywhere.
+            Browser tools never upload your files. AI workspace jobs process extracted text and expire automatically.
           </p>
         </div>
         <div className="flex items-center gap-5 text-xs">
