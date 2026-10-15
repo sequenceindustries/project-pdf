@@ -1,41 +1,39 @@
 @import "tailwindcss";
 
 :root {
-  /* Surfaces */
-  --bg: #fbfaf8;
-  --surface: #ffffff;
-  --surface-soft: #f5f3ef;
-  --fg: #181a1f;
-  --muted: #6b7280;
-  --border: #e8e4dc;
+  /* Warm grey canvas, cream panels, one vivid orange. */
+  --bg: #e2e2df;
+  --surface: #f7f6f2;
+  --surface-soft: #eceae5;
+  --fg: #070607;
+  --muted: #5d5c58;
+  --border: #c9c7bf;
 
-  /* Peedf primary: a confident indigo-violet — distinctive, not fintech-green,
-     not neon. Secondary: a warm coral for contrast highlights. */
-  --accent: #4f3ff0;
-  --accent-dark: #3c2ed1;
-  --accent-soft: #eeecff;
-  --accent-ink: #ffffff;
+  --accent: #fc5000;
+  --accent-dark: #c43f00;
+  --accent-soft: #ffe1d3;
+  --accent-ink: #070607;
 
-  --coral: #ff6b4a;
-  --coral-dark: #e14f30;
-  --coral-soft: #ffece6;
+  --coral: #fc5000;
+  --coral-dark: #c43f00;
+  --coral-soft: #ffe1d3;
 
   --mint-soft: #e8f7ef;
-  --success: #12b76a;
-  --success-bg: #ecfdf3;
+  --success: #0d8a4f;
+  --success-bg: #e5f4ec;
   --warn: #f79009;
 
-  --dark-bg: #15131f;
-  --dark-surface: #1f1c2c;
-  --dark-border: #332f45;
-  --dark-muted: #9a94ae;
+  --dark-bg: #070607;
+  --dark-surface: #171616;
+  --dark-border: #2c2b2a;
+  --dark-muted: #a09e98;
 
-  --radius-sm: 0.9rem;
-  --radius-md: 1.25rem;
-  --radius-lg: 1.75rem;
+  --radius-sm: 999px;
+  --radius-md: 1.75rem;
+  --radius-lg: 2.5rem;
 
-  --font-display: var(--font-jakarta), "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
-  --font-body: var(--font-inter), "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-archivo), "Archivo", ui-sans-serif, system-ui, sans-serif;
+  --font-body: var(--font-dm), "DM Sans", ui-sans-serif, system-ui, sans-serif;
 }
 
 * {
@@ -59,7 +57,10 @@ h2,
 h3,
 .font-display {
   font-family: var(--font-display);
-  letter-spacing: -0.02em;
+  font-weight: 900;
+  font-stretch: 78%;
+  letter-spacing: -0.01em;
+  line-height: 1;
 }
 
 button,
@@ -68,53 +69,45 @@ a {
 }
 
 :focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 2px solid var(--fg);
   outline-offset: 2px;
   border-radius: 4px;
 }
 
-/* ---- Chunky, tactile UI language ---- */
+/* ---- Pills, cream panels, dotted structure ---- */
 
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  border-radius: var(--radius-sm);
-  border: 2px solid transparent;
+  border-radius: 999px;
+  border: 1.5px solid transparent;
   font-weight: 700;
   white-space: nowrap;
 }
 .btn:active {
-  transform: translateY(2px);
+  transform: scale(0.97);
 }
 
 .btn-primary {
   background: var(--accent);
-  border-color: var(--accent-dark);
   color: var(--accent-ink);
-  box-shadow: 0 4px 0 0 var(--accent-dark);
 }
 .btn-primary:hover {
-  background: #5a4bf5;
-}
-.btn-primary:active {
-  box-shadow: 0 2px 0 0 var(--accent-dark);
+  background: #ff6a24;
 }
 .btn-primary:disabled {
   opacity: 0.45;
-  box-shadow: 0 4px 0 0 var(--accent-dark);
   transform: none;
 }
 
 .btn-dark {
   background: var(--fg);
-  border-color: #000000;
   color: #ffffff;
-  box-shadow: 0 4px 0 0 #000000;
 }
-.btn-dark:active {
-  box-shadow: 0 2px 0 0 #000000;
+.btn-dark:hover {
+  background: #2a2929;
 }
 .btn-dark:disabled {
   opacity: 0.45;
@@ -122,21 +115,16 @@ a {
 }
 
 .btn-outline {
-  background: var(--surface);
-  border-color: var(--border);
+  background: transparent;
+  border: 1.5px dotted var(--fg);
   color: var(--fg);
-  box-shadow: 0 4px 0 0 var(--border);
 }
 .btn-outline:hover {
-  border-color: #d7d2c6;
-}
-.btn-outline:active {
-  box-shadow: 0 2px 0 0 var(--border);
+  background: var(--surface);
 }
 
 .card-chunky {
   background: var(--surface);
-  border: 2px solid var(--border);
   border-radius: var(--radius-md);
 }
 
@@ -145,9 +133,24 @@ a {
   align-items: center;
   gap: 0.4rem;
   border-radius: 999px;
-  border: 2px solid var(--border);
-  font-weight: 600;
+  border: 1.5px dotted var(--fg);
+  font-weight: 500;
   font-size: 0.8125rem;
+  padding: 0.35rem 0.8rem;
+}
+
+.dotted-l {
+  border-left: 1.5px dotted var(--fg);
+}
+.dotted-t {
+  border-top: 1.5px dotted var(--fg);
+}
+
+.halftone {
+  background-image: radial-gradient(circle, rgba(7, 6, 7, 0.16) 1.6px, transparent 1.8px);
+  background-size: 14px 14px;
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 40%);
+  mask-image: linear-gradient(to bottom, transparent, #000 40%);
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -2,22 +2,21 @@ import Link from "next/link";
 
 export default function Header() {
   return (
-    <div className="sticky top-3 z-20 px-3 sm:top-4 sm:px-4">
-      <header className="mx-auto flex max-w-3xl items-center justify-between rounded-[1.25rem] border-2 border-[var(--border)] bg-[var(--surface)]/95 px-4 py-2.5 backdrop-blur-md sm:px-5 sm:py-3">
-        <Link href="/" className="font-display flex items-center gap-2 text-base font-extrabold sm:text-lg">
-          <span className="flex h-7 w-7 items-center justify-center rounded-[0.6rem] border-2 border-[var(--accent-dark)] bg-[var(--accent)] text-xs text-white sm:h-8 sm:w-8">
-            p
-          </span>
-          peedf
+    <div className="sticky top-3 z-20 px-3 sm:top-4 sm:px-6">
+      <header className="mx-auto flex max-w-5xl items-center justify-between rounded-full bg-[var(--surface)]/95 py-2 pl-5 pr-2 backdrop-blur-md sm:pl-6">
+        <div className="flex items-center gap-4 sm:gap-5">
+          <Link href="/" className="font-display text-2xl text-[var(--accent)]" aria-label="peedf home">
+            peedf
+          </Link>
+          <span aria-hidden className="dotted-l hidden h-6 sm:block" />
+          <nav className="hidden items-center gap-5 text-sm font-medium sm:flex">
+            <Link href="/#how" className="hover:text-[var(--accent-dark)]">How it works</Link>
+            <Link href="/tools" className="hover:text-[var(--accent-dark)]">Free tools</Link>
+          </nav>
+        </div>
+        <Link href="/workspace" className="btn btn-primary px-5 py-2.5 text-sm">
+          Open workspace
         </Link>
-        <nav className="flex items-center gap-2">
-          <Link href="/workspace" className="btn btn-outline px-4 py-2 text-sm sm:px-5">
-            AI workspace
-          </Link>
-          <Link href="/tools" className="btn btn-dark px-4 py-2 text-sm sm:px-5">
-            All tools
-          </Link>
-        </nav>
       </header>
     </div>
   );

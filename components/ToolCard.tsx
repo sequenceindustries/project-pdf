@@ -19,8 +19,8 @@ export default function ToolCard({
     >
       <div className="flex items-start justify-between">
         {Icon ? (
-          <div className="flex h-11 w-11 items-center justify-center rounded-[0.85rem] border-2 border-[var(--accent-dark)] bg-[var(--accent-soft)]">
-            <Icon size={19} strokeWidth={2} className="text-[var(--accent-dark)]" />
+          <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[var(--accent)]">
+            <Icon size={19} strokeWidth={2} className="text-[var(--accent-ink)]" />
           </div>
         ) : null}
         <ArrowRight

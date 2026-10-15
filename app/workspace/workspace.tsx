@@ -6,7 +6,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Dropzone from "@/components/Dropzone";
 import { isPdf } from "@/lib/pdf-utils";
-import { PROMPT_GROUPS } from "./prompts";
+import { PROMPT_GROUPS, PROMPT_KEY, STATUS_LABEL } from "./prompts";
 
 const MAX_AI_BYTES = 20 * 1024 * 1024;
 const STORE = "peedf.job";
@@ -47,8 +47,12 @@ export default function Workspace() {
     if (res.ok) setJob(await res.json());
   }, []);
 
-  // Resume after refresh.
+  // Resume after refresh, or pick up an instruction typed on the homepage.
   useEffect(() => {
+    try {
+      const pre = sessionStorage.getItem(PROMPT_KEY);
+      if (pre) { setInstruction(pre); sessionStorage.removeItem(PROMPT_KEY); }
+    } catch {}
     try {
       const s = JSON.parse(localStorage.getItem(STORE) || "null");
       if (s?.id && s?.token) {
@@ -154,7 +158,7 @@ export default function Workspace() {
               maxLength={1000}
               rows={3}
               placeholder="e.g. Summarise this contract and list the deadlines"
-              className="mt-2 w-full rounded-xl border-2 border-[var(--border)] bg-white px-4 py-3 text-sm outline-none focus:border-[var(--accent)]"
+              className="mt-2 w-full rounded-xl border-[1.5px] border-dotted border-[var(--fg)] bg-[var(--surface)] px-4 py-3 text-sm outline-none focus:border-solid"
             />
             <button onClick={submit} disabled={uploading} className="mt-4 w-full btn btn-primary px-5 py-3.5 disabled:opacity-40">
               {uploading ? <Loader2 className="mx-auto animate-spin" /> : <><Sparkles className="mr-2 inline" size={17} />Do it</>}
@@ -163,10 +167,10 @@ export default function Workspace() {
             <div className="mt-10 space-y-5">
               {PROMPT_GROUPS.map((g) => (
                 <div key={g.title}>
-                  <div className="text-xs font-bold uppercase tracking-wide text-[var(--muted)]">{g.title}</div>
+                  <div className="text-sm font-bold">{g.title} <span className="font-normal text-[var(--muted)]">· {STATUS_LABEL[g.status]}</span></div>
                   <div className="mt-2 flex flex-wrap gap-2">
                     {g.prompts.map((p) => (
-                      <button key={p} onClick={() => setInstruction(p)} className="chip cursor-pointer hover:border-[var(--accent)]">{p}</button>
+                      <button key={p} onClick={() => setInstruction(p)} className="chip cursor-pointer hover:bg-[var(--surface-soft)]">{p}</button>
                     ))}
                   </div>
                 </div>
@@ -237,7 +241,7 @@ export default function Workspace() {
         )}
 
         {problem && (
-          <div role="alert" className="mt-4 rounded-xl border-2 border-red-200 bg-red-50 p-4 text-sm text-red-800">
+          <div role="alert" className="mt-4 rounded-2xl border-[1.5px] border-red-200 bg-red-50 p-4 text-sm text-red-800">
             {problem.message}
             {problem.tool && <Link href={problem.tool.href} className="ml-2 font-bold underline">Open {problem.tool.name}</Link>}
             <button onClick={() => setProblem(null)} aria-label="Dismiss" className="float-right"><X size={16} /></button>

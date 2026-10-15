@@ -1,31 +1,31 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import Script from "next/script";
-import { Inter, Plus_Jakarta_Sans } from "next/font/google";
+import { DM_Sans, Archivo } from "next/font/google";
 
 const GA_ID = "G-2X1XTPV299";
 
-const inter = Inter({
+const dm = DM_Sans({
   subsets: ["latin"],
-  variable: "--font-inter",
+  variable: "--font-dm",
   display: "swap",
 });
 
-const jakarta = Plus_Jakarta_Sans({
+const archivo = Archivo({
   subsets: ["latin"],
-  variable: "--font-jakarta",
+  variable: "--font-archivo",
   display: "swap",
-  weight: ["600", "700", "800"],
+  axes: ["wdth"],
 });
 
 export const metadata: Metadata = {
-  title: "peedf — PDFs, without the headache",
-  description: "Merge, split, compress and convert PDFs with simple browser-first tools.",
+  title: "peedf — your PDFs, your instructions",
+  description: "Upload a PDF, tell peedf what you need, get it done. An AI workspace for your PDFs, plus free in-browser tools.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${inter.variable} ${jakarta.variable}`}>
+    <html lang="en" className={`${dm.variable} ${archivo.variable}`}>
       <body>
         {children}
         <Script src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`} strategy="afterInteractive" />

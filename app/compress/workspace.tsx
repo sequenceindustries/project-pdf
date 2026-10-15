@@ -199,7 +199,7 @@ export default function CompressWorkspace() {
                       onClick={() => setLevelIndex(i)}
                       className={`pill border-2 px-3 py-2.5 text-sm font-bold transition-colors ${
                         levelIndex === i
-                          ? "border-[var(--accent-dark)] bg-[var(--accent)] text-white"
+                          ? "border-[var(--accent-dark)] bg-[var(--accent)] text-[var(--accent-ink)]"
                           : "border-[var(--border)] bg-[var(--surface)] hover:border-[var(--accent)]/50"
                       }`}
                     >
