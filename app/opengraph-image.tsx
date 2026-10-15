@@ -6,7 +6,8 @@ export const contentType = "image/png";
 
 export default function Image() {
   return renderOg({
-    title: "PDFs, without the headache.",
-    subtitle: "Compress, merge, split, convert and protect PDFs in your browser.",
+    title: "Your PDFs. Your instructions.",
+    subtitle: "Upload a PDF, say what you need, download the result.",
+    footer: "Files deleted after 24 hours · single tools stay on your device",
   });
 }

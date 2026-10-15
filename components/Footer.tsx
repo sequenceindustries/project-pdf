@@ -16,8 +16,9 @@ export default function Footer() {
         <div className="mt-10 flex flex-col items-center gap-4 border-t border-[var(--dark-border)] pt-8 text-center sm:flex-row sm:justify-between sm:text-left">
           <div>
             <span className="font-display text-sm font-extrabold text-white">peedf</span>
-            <p className="mt-1 text-xs leading-5">
-              Every tool runs in your browser. Files are never uploaded anywhere.
+            <p className="mt-1 max-w-md text-xs leading-5">
+              Single tools run in your browser and never upload files. The workspace processes files on
+              our servers and deletes them after 24 hours.
             </p>
           </div>
           <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-xs">

@@ -79,10 +79,10 @@ export default function Analytics() {
       aria-label="Analytics consent"
       className="fixed inset-x-3 bottom-3 z-50 sm:inset-x-auto sm:right-4 sm:bottom-4 sm:max-w-sm"
     >
-      <div className="card-chunky p-4 shadow-[0_10px_30px_rgba(24,26,31,0.15)] sm:p-5">
-        <p className="text-sm leading-6">
-          Can we count visits with Google Analytics? It tells us which tools people use. It never
-          sees your files, which stay on your device either way.{" "}
+      <div className="card-chunky p-3.5 shadow-[0_10px_30px_rgba(24,26,31,0.15)] sm:p-5">
+        <p className="text-[0.8rem] leading-5 sm:text-sm sm:leading-6">
+          Can we count visits with Google Analytics? It shows us which tools people use. Google never
+          receives your files, file names or instructions.{" "}
           <Link href="/privacy#analytics" className="font-semibold underline">
             Details
           </Link>

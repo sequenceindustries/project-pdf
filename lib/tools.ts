@@ -263,7 +263,7 @@ export function getTool(slug: ToolSlug): Tool {
 
 /** Static, indexable non-tool pages and when their content last changed. */
 export const staticPages = [
-  { path: "/", updated: "2026-10-08", priority: 1 },
+  { path: "/", updated: "2026-10-15", priority: 1 },
   { path: "/tools", updated: "2026-10-08", priority: 0.8 },
-  { path: "/privacy", updated: "2026-10-08", priority: 0.3 },
+  { path: "/privacy", updated: "2026-10-15", priority: 0.3 },
 ] as const;

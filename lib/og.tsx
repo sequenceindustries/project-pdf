@@ -6,7 +6,15 @@ export const ogSize = { width: 1200, height: 630 };
  * Brand Open Graph card: warm off-white background, indigo "p" mark,
  * big headline. Uses the built-in font so builds need no network access.
  */
-export function renderOg({ title, subtitle }: { title: string; subtitle: string }) {
+export function renderOg({
+  title,
+  subtitle,
+  footer = "Runs in your browser · files stay on your device",
+}: {
+  title: string;
+  subtitle: string;
+  footer?: string;
+}) {
   return new ImageResponse(
     (
       <div
@@ -50,7 +58,7 @@ export function renderOg({ title, subtitle }: { title: string; subtitle: string 
         <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
           <div style={{ width: 16, height: 16, borderRadius: 8, background: "#12b76a" }} />
           <div style={{ fontSize: 28, color: "#181a1f", fontWeight: 600 }}>
-            Runs in your browser · files stay on your device
+            {footer}
           </div>
         </div>
       </div>

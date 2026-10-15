@@ -21,7 +21,7 @@ export const site = {
   url: normalizeOrigin(process.env.NEXT_PUBLIC_SITE_URL),
   tagline: "PDFs, without the headache.",
   description:
-    "Merge, split, compress, convert, rotate, watermark and password-protect PDFs. Every tool runs on your own device, so your files are never uploaded.",
+    "Upload a PDF and say what you need: remove pages, merge, rotate, compress, convert, summarise or extract details. Single tools also run fully in your browser.",
   /** Per-file size limit enforced by every tool (see lib/pdf-utils.ts). */
   maxFileMb: 50,
   publisher: "Sequence Industries",
