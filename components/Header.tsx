@@ -11,11 +11,10 @@ export default function Header() {
           <span aria-hidden className="dotted-l hidden h-6 sm:block" />
           <nav className="hidden items-center gap-5 text-sm font-medium sm:flex">
             <Link href="/#how" className="hover:text-[var(--accent-dark)]">How it works</Link>
-            <Link href="/tools" className="hover:text-[var(--accent-dark)]">Free tools</Link>
           </nav>
         </div>
-        <Link href="/workspace" className="btn btn-primary px-5 py-2.5 text-sm">
-          Open workspace
+        <Link href="/tools" className="btn btn-dark px-5 py-2.5 text-sm">
+          Free tools
         </Link>
       </header>
     </div>

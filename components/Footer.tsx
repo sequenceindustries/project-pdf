@@ -10,7 +10,7 @@ export default function Footer() {
             Browser tools never upload your files. AI workspace jobs process extracted text and expire automatically.
           </p>
           <div className="flex items-center gap-6">
-            <Link href="/workspace" className="transition-colors hover:text-white">AI workspace</Link>
+            <Link href="/" className="transition-colors hover:text-white">AI workspace</Link>
             <Link href="/tools" className="transition-colors hover:text-white">Free tools</Link>
             <span>© {new Date().getFullYear()} peedf.com</span>
           </div>

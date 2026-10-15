@@ -2,16 +2,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import HeroPrompt from "@/components/HeroPrompt";
-import PromptChip from "@/components/PromptChip";
-import { PROMPT_GROUPS, STATUS_LABEL } from "@/app/workspace/prompts";
-
-const FACTS = [
-  { label: "Every key point", value: "Cited" },
-  { label: "Pages per document", value: "200" },
-  { label: "Results deleted after", value: "24h" },
-  { label: "Free in-browser tools", value: "8" },
-];
+import Workspace from "@/app/workspace/workspace";
 
 const STEPS = [
   { title: "Upload a PDF", body: "Drop it in or browse. Text-based PDFs up to 20 MB." },
@@ -26,50 +17,17 @@ export default function Home() {
 
       <section className="relative overflow-hidden">
         <div aria-hidden className="halftone pointer-events-none absolute inset-x-0 bottom-0 h-2/3" />
-        <div className="relative mx-auto max-w-5xl px-4 pb-20 pt-14 sm:px-6 sm:pb-28 sm:pt-20">
-          <h1 className="max-w-4xl text-[3.4rem] leading-[0.95] sm:text-[6rem] md:text-[7.5rem]">
-            Your PDFs. Your instructions. One AI workspace.
-          </h1>
-          <div className="mt-10 grid gap-8 md:mt-14 md:grid-cols-[1fr_1.1fr] md:items-end md:gap-12">
-            <p className="max-w-sm text-lg leading-7 font-medium">
+        <div className="relative mx-auto grid max-w-5xl gap-8 px-4 pb-16 pt-10 sm:px-6 sm:pb-24 sm:pt-14 md:grid-cols-[1.05fr_1fr] md:items-start md:gap-10">
+          <div>
+            <h1 className="text-[3.4rem] leading-[0.95] sm:text-[5rem] md:text-[5.5rem]">
+              Your PDFs. Your instructions. One AI workspace.
+            </h1>
+            <p className="mt-6 max-w-sm text-lg font-medium leading-7">
               Upload a PDF. Tell peedf what you need. Get it done, with every claim traced back to a page.
             </p>
-            <HeroPrompt />
           </div>
-          <div className="mt-6 flex flex-wrap items-center gap-3">
-            <Link href="/workspace" className="btn btn-primary px-7 py-3.5 text-base">Open the workspace</Link>
-            <a href="#how" className="btn btn-outline px-7 py-3.5 text-base">How it works</a>
-          </div>
-        </div>
-      </section>
-
-      <section className="mx-auto max-w-5xl px-4 pb-16 sm:px-6 sm:pb-24">
-        <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
-          {FACTS.map((f) => (
-            <div key={f.label} className="flex min-h-44 flex-col justify-between rounded-[2rem] bg-[var(--accent)] p-5 sm:min-h-52 sm:p-6">
-              <div className="text-sm font-medium text-[var(--accent-ink)]">{f.label}</div>
-              <div className="font-display text-6xl text-white sm:text-7xl">{f.value}</div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section className="mx-auto max-w-5xl px-4 pb-16 sm:px-6 sm:pb-24">
-        <div className="rounded-[2.5rem] bg-[var(--surface)] p-6 sm:p-12">
-          <h2 className="max-w-2xl text-5xl sm:text-6xl">Ask for what you need</h2>
-          <p className="mt-4 max-w-xl text-base leading-7 text-[var(--muted)]">
-            Pick a starting point or write your own. Every request goes through the same workspace.
-          </p>
-          <div className="mt-10 grid gap-x-10 gap-y-8 sm:grid-cols-2">
-            {PROMPT_GROUPS.map((g) => (
-              <div key={g.title}>
-                <h3 className="text-2xl">{g.title}</h3>
-                <div className="mt-1 text-sm text-[var(--muted)]">{STATUS_LABEL[g.status]}</div>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  {g.prompts.map((p) => <PromptChip key={p} text={p} />)}
-                </div>
-              </div>
-            ))}
+          <div className="rounded-[2rem] bg-[var(--surface)] p-4 sm:p-6 md:sticky md:top-24">
+            <Workspace />
           </div>
         </div>
       </section>

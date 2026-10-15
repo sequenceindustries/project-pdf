@@ -8,6 +8,7 @@ export default function Dropzone({
   title,
   subtitle,
   icon: Icon = Upload,
+  compact = false,
 }: {
   accept: string;
   multiple?: boolean;
@@ -15,6 +16,7 @@ export default function Dropzone({
   title: string;
   subtitle?: string;
   icon?: LucideIcon;
+  compact?: boolean;
 }) {
   return (
     <label
@@ -23,7 +25,7 @@ export default function Dropzone({
         e.preventDefault();
         onFiles(Array.from(e.dataTransfer.files));
       }}
-      className="mt-8 flex cursor-pointer flex-col items-center rounded-[1.75rem] border-[1.5px] border-dotted border-[var(--fg)] bg-[var(--surface)] px-4 py-10 text-center transition-colors hover:bg-[var(--surface-soft)] sm:mt-10 sm:px-6 sm:py-14"
+      className={`${compact ? "mt-0 px-4 py-8" : "mt-8 px-4 py-10 sm:mt-10 sm:px-6 sm:py-14"} flex cursor-pointer flex-col items-center rounded-[1.75rem] border-[1.5px] border-dotted border-[var(--fg)] ${compact ? "bg-transparent" : "bg-[var(--surface)]"} text-center transition-colors hover:bg-[var(--surface-soft)]`}
     >
       <input
         type="file"
