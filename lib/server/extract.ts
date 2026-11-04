@@ -28,7 +28,13 @@ export async function extractPages(buf: Uint8Array): Promise<PageText[]> {
     if (e instanceof ExtractError) throw e;
     throw new ExtractError("encrypted_or_corrupt", "Couldn't read that PDF. It may be password-protected or damaged.");
   }
-  const out = pages.map((t, i) => ({ n: i + 1, text: t.replace(/\s+\n/g, "\n").trim() }));
+  return checkPages(pages.map((t, i) => ({ n: i + 1, text: t.replace(/\s+\n/g, "\n").trim() })));
+}
+
+/** Shared limits for page text, whether we extracted it or a partner did. */
+export function checkPages(out: PageText[]): PageText[] {
+  if (out.length > MAX_PAGES)
+    throw new ExtractError("too_many_pages", `This PDF has ${out.length} pages; the limit is ${MAX_PAGES}. Try splitting it first.`);
   const chars = out.reduce((s, p) => s + p.text.length, 0);
   if (out.length === 0 || chars / out.length < 25)
     throw new ExtractError(
