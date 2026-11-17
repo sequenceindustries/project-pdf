@@ -1,6 +1,7 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import Script from "next/script";
+import { SITE_URL } from "@/lib/site";
 import { DM_Sans, Archivo } from "next/font/google";
 
 const GA_ID = "G-2X1XTPV299";
@@ -19,8 +20,18 @@ const archivo = Archivo({
 });
 
 export const metadata: Metadata = {
-  title: "peedf — your PDFs, your instructions",
+  metadataBase: new URL(SITE_URL),
+  title: { default: "peedf — your PDFs, your instructions", template: "%s | peedf" },
   description: "Upload a PDF, tell peedf what you need, get it done. An AI workspace for your PDFs, plus free in-browser tools.",
+  alternates: { canonical: "/" },
+  openGraph: {
+    type: "website",
+    siteName: "peedf",
+    url: "/",
+    title: "peedf — your PDFs, your instructions",
+    description: "Upload a PDF, tell peedf what you need, get it done. An AI workspace for your PDFs, plus free in-browser tools.",
+  },
+  twitter: { card: "summary" },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

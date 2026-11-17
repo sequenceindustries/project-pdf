@@ -14,8 +14,9 @@ import ToolCard from "@/components/ToolCard";
 import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
-  title: "All tools",
-  description: "Every PDF tool on peedf — merge, split, compress, convert, watermark and more.",
+  title: "All free PDF tools",
+  description: "Every free PDF tool on peedf: merge, split, compress, convert, watermark and more. They run in your browser.",
+  alternates: { canonical: "/tools" },
 };
 
 const tools = [
